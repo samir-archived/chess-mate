@@ -8,8 +8,7 @@ export default function Heading({text, isViewAll=false}) {
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>{text}</Text>
-      {/* {isViewAll ? <Text>View All</Text> : null} */}
-      {isViewAll && <TouchableOpacity onPress={()=>{navigation.push('TutorialScreen')}}><Text>View All</Text></TouchableOpacity>}
+      {isViewAll && <TouchableOpacity onPress={()=>{navigation.navigate('tutorial')}}><Text>View All</Text></TouchableOpacity>}
     </View>
   )
 }

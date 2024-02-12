@@ -12,9 +12,7 @@ import Colors from "../../Utils/Colors";
 import * as WebBrowser from "expo-web-browser";
 import { useOAuth } from "@clerk/clerk-expo";
 import { useWarmUpBrowser } from "../../hooks/warmUpBrowser";
-
 import { useNavigation } from "@react-navigation/native";
-const navigation = useNavigation();
 
 
 WebBrowser.maybeCompleteAuthSession();
@@ -23,9 +21,10 @@ export var isGuest = Boolean;
 
 export default function WelcomeScreen() {
   useWarmUpBrowser();
-
+  const navigation = useNavigation();
+  
   const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
-
+  
   const onPress = React.useCallback(async () => {
     try {
       !isGuest;

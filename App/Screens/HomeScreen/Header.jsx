@@ -1,10 +1,9 @@
 import { useUser } from "@clerk/clerk-expo";
 import React from "react";
-import { View, Text, Image, StyleSheet, TextInput } from "react-native";
+import { View, Text, Image, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import Colors from "../../Utils/Colors";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { isGuest } from "../WelcomeScreen/WelcomeScreen";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 export default function Header() {
   const { user, isLoading } = useUser();
@@ -14,7 +13,7 @@ export default function Header() {
     (user || isGuest) && (
       <View style={styles.container}>
         <View style={styles.profileContainer}>
-          <TouchableOpacity onPress={()=>{navigation.push('ProfileScreen')}}>
+          <TouchableOpacity onPress={()=>{navigation.navigate('profile')}}>
             {isGuest ? (
               <FontAwesome5 name="user" size={25} color="white" />
             ) : (
