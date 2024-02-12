@@ -11,8 +11,8 @@ export default function BoardNavigation() {
   <Stack.Navigator screenOptions={{
     headerShown: false
   }}>
-    <Stack.Screen name="Home" component={HomeScreen} />
-    <Stack.Screen name="Board" component={BoardScreen} />
+    <Stack.Screen name="Home" component={HomeScreen} options={{ tabBarVisible: true }}/>
+    <Stack.Screen name="Board" component={BoardScreen} options={{ tabBarVisible: false }}/>
   </Stack.Navigator>
   )
 }

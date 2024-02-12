@@ -11,7 +11,7 @@ export default function Play() {
     <View style={{}}>
       {/* <Heading text="Tutorials" isViewAll={true} /> */}
       <View style={styles.buttons}>
-        <TouchableOpacity style={styles.button} onPress={() => {navigation.push('Board')}}>
+        <TouchableOpacity style={styles.button} onPress={() => {navigation.navigate('board')}}>
           <Text style={styles.btnText}>Play</Text>
         </TouchableOpacity>
       </View>

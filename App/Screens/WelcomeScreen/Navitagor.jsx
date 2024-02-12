@@ -1,7 +1,7 @@
 import { View, Text } from "react-native";
 import React from "react";
 import WelcomeScreen from "./WelcomeScreen";
-import TabNavigation from "../../Navigations/TabNavigation";
+import StackScreen from "../StackScreen/StackScreen";
 
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
@@ -18,7 +18,7 @@ const Navigator = () => {
         }}
       >
         <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
-        <Stack.Screen name="TabNavigation" component={TabNavigation} />
+        <Stack.Screen name="StackScreen" component={StackScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

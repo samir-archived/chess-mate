@@ -45,7 +45,7 @@ export default function WelcomeScreen() {
 
   const GuestMode = () => {
     isGuest;
-    navigation.push("TabNavigation");
+    navigation.push("StackScreen");
   };
 
   return (

@@ -5,10 +5,10 @@ import WelcomeScreen from "./App/Screens/WelcomeScreen/WelcomeScreen";
 import { ClerkProvider, SignedIn, SignedOut } from "@clerk/clerk-expo";
 import * as SecureStore from "expo-secure-store";
 import { NavigationContainer } from "@react-navigation/native";
-import TabNavigation from "./App/Navigations/TabNavigation";
 import { useFonts } from 'expo-font';
 import Colors from "./App/Utils/Colors";
 import Navigator from "./App/Screens/WelcomeScreen/Navitagor";
+import StackScreen from "./App/Screens/StackScreen/StackScreen";
 
 const tokenCache = {
   async getToken(key) {
@@ -42,7 +42,7 @@ export default function App() {
         {/* Sign In Component */}
         <SignedIn>
           <NavigationContainer>
-            <TabNavigation/>
+            <StackScreen/>
           </NavigationContainer>
         </SignedIn>
         {/* Sign Out Component */}
