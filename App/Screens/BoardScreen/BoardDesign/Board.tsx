@@ -3,9 +3,9 @@ import { View, StyleSheet, Dimensions } from "react-native";
 import { Chess } from "chess.js";
 
 import Background from "./Background";
-// import Piece from "./Deprecated";
+import Piece from "./Deprecated";
 // import Piece from "./Piece";
-import Piece from "./tempFile";
+// import Piece from "./tempFile";
 // import Piece from "./Next";
 import { SIZE } from "./Notation";
 

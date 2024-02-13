@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import TutorialScreen from "../Screens/TutorialScreen/TutorialScreen";
 import ProfileScreen from "../Screens/ProfileScreen/ProfileScreen";
 import HomeScreen from "../Screens/HomeScreen/HomeScreen";
-import BoardNavigation from "./BoardNavigation";
+// import BoardNavigation from "./BoardNavigation";
 import BoardScreen from "../Screens/BoardScreen/BoardScreen";
 
 // Icons

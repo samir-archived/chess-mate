@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import React , { useContext, createContext }from "react";
 import ChessBoard from "./ChessBoard";
+import Chessboard from "../Board/Chessboard";
 import { useNavigation } from "@react-navigation/native";
 
 export default function BoardScreen() {
@@ -9,7 +10,7 @@ export default function BoardScreen() {
   return (
     <View>
       <TouchableOpacity
-        style={{ display: "flex", flexDirection: "row", gap: 10, padding: 20 }}
+        style={{ display: "flex", flexDirection: "row", alignItems: 'center', gap: 10, padding: 20 }}
         onPress={() =>{ navigation.navigate('home'); }}
       >
         <Ionicons name="arrow-back-circle-outline" size={27} color="black" />
@@ -17,7 +18,7 @@ export default function BoardScreen() {
           Chess Mate
         </Text>
       </TouchableOpacity>
-      <ChessBoard />
+      <Chessboard />
     </View>
   );
 }

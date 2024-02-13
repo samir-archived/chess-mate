@@ -16,6 +16,7 @@ import {
     runOnJS,
     useSharedValue,
     useAnimatedStyle,
+    withTiming,
 } from "react-native-reanimated";
 
 import { toTranslation, SIZE, toPosition, Position } from "./Notation";
@@ -49,30 +50,58 @@ interface PieceProps {
 }
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-var chkPoint = 1;
-
+var chkPoint = false;
 const Piece = ({ id, startPosition, chess, onTurn, enabled }: PieceProps) => {
+    const isGestureActive = useSharedValue(false);
+  const offsetX = useSharedValue(0);
+  const offsetY = useSharedValue(0);
+  const translateX = useSharedValue(startPosition.x * SIZE);
+  const translateY = useSharedValue(startPosition.y * SIZE);
+  const movePiece = useCallback(
+    (to: Position) => {
+      const moves = chess.moves({ verbose: true });
+      const from = toPosition({ x: offsetX.value, y: offsetY.value });
+      const move = moves.find((m) => m.from === from && m.to === to);
+      const { x, y } = toTranslation(move ? move.to : from);
+      translateX.value = withTiming(
+        x,
+        {},
+        () => (offsetX.value = translateX.value)
+      );
+      translateY.value = withTiming(y, {}, () => {
+        offsetY.value = translateY.value;
+        isGestureActive.value = false;
+      });
+      if (move) {
+        chess.move({ from, to });
+        onTurn();
+      }
+    },
+    [chess, isGestureActive, offsetX, offsetY, onTurn, translateX, translateY]
+  );
 
+    console.log("++==>>", startPosition, translateX, translateY)
     // console.log(Math.floor(SCREEN_WIDTH / 8)) //49
 
     var pan = useState(new Animated.ValueXY())[0];
-    pan.x.setValue(startPosition.x);
-    pan.y.setValue(startPosition.y);
 
     const panResponder = useState(
         PanResponder.create({
             // onStartShouldSetPanResponder: ()=> true,
             onMoveShouldSetPanResponder: () => true,
-            onPanResponderMove: (_, gesture) => {
+            onPanResponderMove: 
+            // Animated.event([null, { dx: pan.x, dy: pan.y }]),
+            (_, gesture) => {
                 gesture.dx
-                // console.log("vx",gesture.vx)
-                // console.log("vy",gesture.vy)
+                // console.log("Before",pan.x, pan.y)
                 pan.x.setValue(gesture.dx)
                 pan.y.setValue(gesture.dy)
+                // console.log("After",pan.x, pan.y)
             },
             onPanResponderRelease: () => {
                 // pan.extractOffset();
                 pan.flattenOffset();
+                // console.log("BREAK")
             },
         }),
     )[0];
