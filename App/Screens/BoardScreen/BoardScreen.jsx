@@ -3,6 +3,8 @@ import { Ionicons } from "@expo/vector-icons";
 import React , { useContext, createContext }from "react";
 import ChessBoard from "./ChessBoard";
 import Chessboard from "../Board/Chessboard";
+import MasterFile from "../Board/MasterFile";
+import Piece from "../Board/Piece";
 import { useNavigation } from "@react-navigation/native";
 
 export default function BoardScreen() {
@@ -18,7 +20,8 @@ export default function BoardScreen() {
           Chess Mate
         </Text>
       </TouchableOpacity>
-      <Chessboard />
+      {/* <Piece /> */}
+      <MasterFile />
     </View>
   );
 }

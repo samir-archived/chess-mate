@@ -84,6 +84,8 @@ const Piece = ({ id, startPosition, chess, onTurn, enabled }: PieceProps) => {
     // console.log(Math.floor(SCREEN_WIDTH / 8)) //49
 
     var pan = useState(new Animated.ValueXY())[0];
+    pan.x.setValue(startPosition.x)
+    pan.y.setValue(startPosition.y)
 
     const panResponder = useState(
         PanResponder.create({
