@@ -11,6 +11,7 @@ import React from "react";
 import Chessboard from "./Chessboard";
 import Piece from "./Piece";
 import { PieceImage } from "../BoardScreen/BoardDesign/DeprecatedExtended";
+import { toTranslation, toPosition } from "./Notation";
 const { width } = Dimensions.get("window");
 const { height } = Dimensions.get("window");
 

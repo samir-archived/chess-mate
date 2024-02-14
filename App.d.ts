@@ -20,3 +20,5 @@ declare module "chess.js" {
     board(): Board;
   }
 }
+
+
