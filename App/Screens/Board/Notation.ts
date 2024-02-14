@@ -3,6 +3,7 @@ import { Dimensions } from "react-native";
 import { Vector } from "react-native-redash";
 
 const { width } = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 
 export const SIZE = width / 8;
 

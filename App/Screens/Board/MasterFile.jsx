@@ -7,10 +7,11 @@ import {
   StyleSheet,
   Dimensions,
 } from "react-native";
-import React from "react";
+import React, { useCallback, useRef, useState } from "react";
 import Chessboard from "./Chessboard";
 import Piece from "./Piece";
 import { PieceImage } from "../BoardScreen/BoardDesign/DeprecatedExtended";
+import { Chess } from "chess.js";
 const { width } = Dimensions.get("window");
 const { height } = Dimensions.get("window");
 
@@ -63,21 +64,52 @@ function getPieceType(row, col) {
   }
 }
 
+function useConst(initialValue) {
+  const ref = useRef({ value: undefined });
+
+  if (ref.current.value === undefined) {
+    // Box the value in an object so we can tell if it's initialized
+    // even if the initializer returns/is undefined
+    ref.current.value =
+      typeof initialValue === 'function' ? initialValue() : initialValue;
+  }
+
+  return ref.current.value;
+}
+
 export default function MasterFile() {
+  const chess = useConst(new Chess());
+  const [state, setState] = useState({
+    player: "w",
+    board: chess.board(),
+  });
+  const onTurn = useCallback(() => {
+    setState({
+      player: state.player === "w" ? "b" : "w",
+      board: chess.board(),
+    });
+  }, [chess, state.player]);
+
   return (
     // <View style={styles.mainContainer}>
     <View style={styles.container}>
       <Chessboard />
-      {new Array(8).fill(0).map((_, i) =>
-        new Array(8).fill(0).map((_, j) => {
+      {/* {new Array(8).fill(0).map((_, i) =>
+        new Array(8).fill(0).map((_, j) => { */}
+      {state.board.map((row, i) =>
+        row.map((piece, j) => {
+          if (piece === null) return null;
           const pieceType = getPieceType(i, j);
           const pieceImage = images.find((piece) => piece.key === pieceType);
           return (
             pieceType && (
               <Piece
+                key={`${i}${j}`}
                 xCoordinate={j * SIZE}
                 yCoordinate={i * SIZE}
                 imgUri={pieceImage.uri}
+                onTurn={onTurn}
+                enabled={state.player === piece.color}
               />
             )
           );
