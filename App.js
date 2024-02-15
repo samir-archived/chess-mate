@@ -7,6 +7,7 @@ import * as SecureStore from "expo-secure-store";
 import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from 'expo-font';
 import Colors from "./App/Utils/Colors";
+import { ChessProvider } from "./App/Screens/BoardScreen/Design/ChessContext";
 import Navigator from "./App/Screens/WelcomeScreen/Navitagor";
 import StackScreen from "./App/Screens/StackScreen/StackScreen";
 
@@ -34,6 +35,7 @@ export default function App() {
     'outfit-bold': require('./assets/fonts/Outfit-Bold.ttf'),
   });
   return (
+    <ChessProvider>
     <ClerkProvider
       tokenCache={tokenCache}
       publishableKey="pk_test_aG9uZXN0LWphdmVsaW4tNTIuY2xlcmsuYWNjb3VudHMuZGV2JA"
@@ -52,6 +54,7 @@ export default function App() {
         <StatusBar backgroundColor={Colors.PRIMARY} barStyle="light-content" />
       </View>
     </ClerkProvider>
+    </ChessProvider>
   );
 }
 

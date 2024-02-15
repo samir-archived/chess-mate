@@ -1,28 +1,43 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import React from "react";
+import { View, Text, TouchableOpacity, StyleSheet, Button } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import React , { useContext, createContext }from "react";
-import ChessBoard from "./ChessBoard";
-import Chessboard from "../Board/Chessboard";
-import MasterFile from "../Board/MasterFile";
-import Board from "../Board/Board";
-import Piece from "../Board/Piece";
-import { useNavigation } from "@react-navigation/native";
+import { useChess } from "./Design/ChessContext";
+import MasterFile from "./Design/MasterFile";
 
-export default function BoardScreen() {
-  const navigation = useNavigation();
+const styles = StyleSheet.create({
+  // Your styles here
+});
+
+const BoardScreenContent = () => {
+  const { state, updateChessState } = useChess();
+
+  // Additional logic for BoardScreenContent if needed
+
+  return (
+    <View style={styles.container}>
+      {/* Your component code here */}
+      <MasterFile />
+    </View>
+  );
+};
+
+const BoardScreen = () => {
+  const { updateChessState } = useChess();
+
   return (
     <View>
       <TouchableOpacity
         style={{ display: "flex", flexDirection: "row", alignItems: 'center', gap: 10, padding: 20 }}
-        onPress={() =>{ navigation.navigate('home'); }}
+        onPress={updateChessState} // Update the chess state when needed
       >
         <Ionicons name="arrow-back-circle-outline" size={27} color="black" />
         <Text style={{ fontSize: 25, fontFamily: "outfit-medium" }}>
           Chess Mate
         </Text>
       </TouchableOpacity>
-      {/* <Piece /> */}
-      <Board />
+      <BoardScreenContent />
     </View>
   );
-}
+};
+
+export default BoardScreen;

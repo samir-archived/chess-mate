@@ -10,7 +10,6 @@ import {
 import React, { useCallback, useRef, useState } from "react";
 import Chessboard from "./Chessboard";
 import Piece from "./Piece";
-import { PieceImage } from "../BoardScreen/BoardDesign/DeprecatedExtended";
 import { Chess } from "chess.js";
 const { width } = Dimensions.get("window");
 const { height } = Dimensions.get("window");
@@ -65,30 +64,33 @@ function getPieceType(row, col) {
 }
 
 function useConst(initialValue) {
-  const ref = useRef({ value: undefined });
-
-  if (ref.current.value === undefined) {
-    // Box the value in an object so we can tell if it's initialized
-    // even if the initializer returns/is undefined
-    ref.current.value =
-      typeof initialValue === 'function' ? initialValue() : initialValue;
+  const ref = useRef();
+  if (ref.current === undefined) {
+    // Box the value in an object so we can tell if it's initialized even if the initializer
+    // returns/is undefined
+    ref.current = {
+      value:
+        typeof initialValue === "function"
+          ? // eslint-disable-next-line @typescript-eslint/ban-types
+          initialValue()
+          : initialValue,
+    };
   }
-
   return ref.current.value;
 }
 
 export default function MasterFile() {
-  const chess = useConst(new Chess());
+  const chess = useConst(() => new Chess());
   const [state, setState] = useState({
     player: "w",
     board: chess.board(),
   });
   const onTurn = useCallback(() => {
-    setState({
-      player: state.player === "w" ? "b" : "w",
+    setState((prevState) => ({
+      player: prevState.player === "w" ? "b" : "w",
       board: chess.board(),
-    });
-  }, [chess, state.player]);
+    }));
+  }, [chess]);
 
   return (
     // <View style={styles.mainContainer}>
@@ -108,6 +110,7 @@ export default function MasterFile() {
                 xCoordinate={j * SIZE}
                 yCoordinate={i * SIZE}
                 imgUri={pieceImage.uri}
+                chess={chess}
                 onTurn={onTurn}
                 enabled={state.player === piece.color}
               />

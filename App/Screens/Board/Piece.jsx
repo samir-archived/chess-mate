@@ -1,6 +1,7 @@
 import { Chess } from "chess.js";
-import { View, Text, Image, Dimensions, StyleSheet } from "react-native";
 import React, { useState, useCallback } from "react";
+import { StyleSheet, Image } from "react-native";
+import { PanGestureHandler } from "react-native-gesture-handler";
 import Animated, {
   runOnJS,
   useAnimatedGestureHandler,
@@ -8,18 +9,30 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { PanGestureHandler } from "react-native-gesture-handler";
 
-const { width } = Dimensions.get("window");
-const { height } = Dimensions.get("window");
+import { toTranslation, SIZE, toPosition } from "./Notation";
 
-export const SIZE = width / 8;
+function useConst(initialValue) {
+  const ref = useRef();
+  if (ref.current === undefined) {
+    // Box the value in an object so we can tell if it's initialized even if the initializer
+    // returns/is undefined
+    ref.current = {
+      value:
+        typeof initialValue === "function"
+          ? // eslint-disable-next-line @typescript-eslint/ban-types
+          initialValue()
+          : initialValue,
+    };
+  }
+  return ref.current.value;
+}
 
-const postition = 'a1' | 'a2';
 export default function Piece({
   xCoordinate,
   yCoordinate,
   imgUri,
+  chess,
   onTurn,
   enabled,
 }) {
@@ -28,41 +41,30 @@ export default function Piece({
   const offsetY = useSharedValue(0);
   const translateX = useSharedValue(xCoordinate);
   const translateY = useSharedValue(yCoordinate);
-  const chess = new Chess();
-  const movePiece = useCallback((from , to) => {
-      const move = chess.moves({ verbose: true }).find((m) => m.from === from && m.to === to);
-      // const from = toPosition({ x: offsetX.value, y: offsetY.value });
-      // const move = moves.find((m) => m.from === from && m.to === to);
-      const filterMove = (move ? move.to : from);
-      const [col, row] = filterMove.split("");
-      
-      const indexes = {
-        x: col.charCodeAt(0) - "a".charCodeAt(0),
-        y: parseInt(row, 10) - 1,
-      };
   
-      const { x, y } = {
-        x: indexes.x * SIZE,
-        y: 7 * SIZE - indexes.y * SIZE,
-      };
-      translateX.value = withTiming(x);
-      translateY.value = withTiming(y);
-      // translateX.value = withTiming(
-      //   x,
-      //   {},
-      //   () => (offsetX.value = translateX.value)
-      // );
-      // translateY.value = withTiming(y, {}, () => {
-      //   offsetY.value = translateY.value;
-      //   isGestureActive.value = false;
-      // });
+  const movePiece = useCallback(
+    (to) => {
+      const moves = chess.moves({ verbose: true });
+      const from = toPosition({ x: offsetX.value, y: offsetY.value });
+      const move = moves.find((m) => m.from === from && m.to === to);
+      const { x, y } = toTranslation(move ? move.to : from);
+      translateX.value = withTiming(
+      x,
+      {},
+      () => (offsetX.value = translateX.value)
+      );
+      translateY.value = withTiming(y, {}, () => {
+      offsetY.value = translateY.value;
+      isGestureActive.value = false;
+      });
       if (move) {
         chess.move({ from, to });
         // chess.move(move);
         onTurn();
       }
-    }, [chess, translateX, translateY, enabled, onTurn]  );
-
+    },
+    [chess, isGestureActive, offsetX, offsetY, onTurn, translateX, translateY]
+  );
 
   const onGestureEvent = useAnimatedGestureHandler({
     onStart: () => {
@@ -82,41 +84,9 @@ export default function Piece({
       }
     },
     onEnd: () => {
-      // const position = toPosition({x: translateX.value, y: translateY.value});
-      // const translation = toTranslation(position);
-      let colFrom = String.fromCharCode(97 + Math.round(offsetX.value / SIZE));
-      let rowFrom = `${8 - Math.round(offsetY.value / SIZE)}`;
-      const from = `${colFrom}${rowFrom}`;
-      
-      let colTo = String.fromCharCode(97 + Math.round(translateX.value / SIZE));
-      let rowTo = `${8 - Math.round(translateY.value / SIZE)}`;
-      const to = `${colTo}${rowTo}`;
-
-      runOnJS(movePiece)(from, to);
-      // runOnJS(
-
-        // if (!colTo || !rowTo) {
-        //   throw new Error("Invalid notation: " + `${colTo}${rowTo}`);
-        // }
-        // const indexes = {
-        //   x: colTo.charCodeAt(0) - "a".charCodeAt(0),
-        //   y: parseInt(rowTo, 10) - 1,
-        // };
-        // const { x, y } = {
-        //   x: indexes.x * SIZE,
-        //   y: 7 * SIZE - indexes.y * SIZE,
-        // };
-        // translateX.value = withTiming(
-        //   x,
-        //   {},
-        //   () => (offsetX.value = translateX.value)
-        // );
-        // translateY.value = withTiming(y, {}, () => {
-        //   offsetY.value = translateY.value;
-        //   isGestureActive.value = false;
-        // });
-      //   toPosition({ x: translateX.value, y: translateY.value })
-      // );
+      runOnJS(movePiece)(
+        toPosition({ x: translateX.value, y: translateY.value })
+      );
     },
   });
 
@@ -143,29 +113,17 @@ export default function Piece({
   });
 
   const underlay = useAnimatedStyle(() => {
-    let col = String.fromCharCode(97 + Math.round(translateX.value / SIZE));
-    let row = `${8 - Math.round(translateY.value / SIZE)}`;
-    if (!col || !row) {
-      throw new Error("Invalid notation: " + `${col}${row}`);
-    }
-    const indexes = {
-      x: col.charCodeAt(0) - "a".charCodeAt(0),
-      y: parseInt(row, 10) - 1,
-    };
-
-    const { x, y} = {
-      x: indexes.x * SIZE,
-      y: 7 * SIZE - indexes.y * SIZE,
-    };
-
+    const position = toPosition({ x: translateX.value, y: translateY.value });
+    const translation = toTranslation(position);
     return {
       position: "absolute",
       width: SIZE,
       height: SIZE,
       zIndex: 0,
-      backgroundColor: isGestureActive.value ? "red" : "transparent",
-      // : "rgba(255, 255, 0, 0.5)",
-      transform: [{ translateX: x }, { translateY: y }],
+      backgroundColor: isGestureActive.value
+        ? "rgba(255, 255, 0, 0.5)"
+        : "transparent",
+      transform: [{ translateX: translation.x }, { translateY: translation.y }],
     };
   });
 
