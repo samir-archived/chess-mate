@@ -10,6 +10,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { toTranslation, SIZE, toPosition } from "./Notation";
+import { useChess } from "./ChessContext";
 
 const styles = StyleSheet.create({
   piece: {
@@ -32,8 +33,9 @@ const PIECES = {
   wk: require("../../../../assets/pieces/wk.png"),
   wp: require("../../../../assets/pieces/wp.png"),
 };
+// ... (import statements)
 
-const Pieces = ({ id, startPosition, chess, onTurn, enabled }) => {
+const Pieces = ({ key, id, startPosition, chess, onTurn, enabled }) => {
   const isGestureActive = useSharedValue(false);
   const offsetX = useSharedValue(0);
   const offsetY = useSharedValue(0);
@@ -41,23 +43,44 @@ const Pieces = ({ id, startPosition, chess, onTurn, enabled }) => {
   const translateY = useSharedValue(startPosition.y);
 
   const movePiece = useCallback(
-    (to) => {
-      const moves = chess.moves({ verbose: true });
-      const from = toPosition({ x: offsetX.value, y: offsetY.value });
-      const move = moves.find((m) => m.from === from && m.to === to);
-      const { x, y } = toTranslation(move ? move.to : from);
-      translateX.value = withTiming(
-        x,
-        {},
-        () => (offsetX.value = translateX.value)
-      );
-      translateY.value = withTiming(y, {}, () => {
-        offsetY.value = translateY.value;
-        isGestureActive.value = false;
-      });
-      if (move) {
-        chess.move({ from, to });
-        onTurn();
+    (to, switchTurn) => {
+      try {
+        const moves = chess.moves({ verbose: true });
+        const from = toPosition({ x: offsetX.value, y: offsetY.value });
+        const move = moves.find((m) => m.from === from && m.to === to);
+        const { x, y } = toTranslation(move ? move.to : from);
+        translateX.value = withTiming(
+          x,
+          {},
+          () => (offsetX.value = translateX.value)
+        );
+        translateY.value = withTiming(y, {}, () => {
+          offsetY.value = translateY.value;
+          isGestureActive.value = false;
+        });
+
+        if (move) {
+          // Check for pawn promotion
+          const promotionRank = chess.turn() === "w" ? 8 : 1;
+          console.log(move.flags, move.to, move.from, promotionRank);
+
+          // Check for capturing and promoting on the 8th rank (cp flag)
+          if (
+            (move.flags.includes("cp") &&
+              parseInt(move.to[1]) === promotionRank) ||
+            ((move.flags.includes("c") || move.flags.includes("p")) &&
+              parseInt(to[1]) === promotionRank)
+          ) {
+            // Handle capturing and promoting
+            chess.remove(move.from);
+            chess.remove(move.to);
+            chess.put({ type: "q", color: chess.turn() }, move.from);
+          }
+          chess.move({ from, to });
+          switchTurn();
+        }
+      } catch (err) {
+        console.log("Error:", err);
       }
     },
     [chess, isGestureActive, offsetX, offsetY, onTurn, translateX, translateY]
@@ -75,7 +98,8 @@ const Pieces = ({ id, startPosition, chess, onTurn, enabled }) => {
     },
     onEnd: () => {
       runOnJS(movePiece)(
-        toPosition({ x: translateX.value, y: translateY.value })
+        toPosition({ x: translateX.value, y: translateY.value }),
+        onTurn
       );
     },
   });
@@ -89,18 +113,16 @@ const Pieces = ({ id, startPosition, chess, onTurn, enabled }) => {
     ],
   }));
 
-  const original = useAnimatedStyle(() => {
-    return {
-      position: "absolute",
-      width: SIZE,
-      height: SIZE,
-      zIndex: 0,
-      backgroundColor: isGestureActive.value
-        ? "rgba(255, 255, 0, 0.5)"
-        : "transparent",
-      transform: [{ translateX: offsetX.value }, { translateY: offsetY.value }],
-    };
-  });
+  const original = useAnimatedStyle(() => ({
+    position: "absolute",
+    width: SIZE,
+    height: SIZE,
+    zIndex: 0,
+    backgroundColor: isGestureActive.value
+      ? "rgba(255, 255, 0, 0.5)"
+      : "transparent",
+    transform: [{ translateX: offsetX.value }, { translateY: offsetY.value }],
+  }));
 
   const underlay = useAnimatedStyle(() => {
     const position = toPosition({ x: translateX.value, y: translateY.value });
@@ -123,7 +145,7 @@ const Pieces = ({ id, startPosition, chess, onTurn, enabled }) => {
       <Animated.View style={underlay} />
       <PanGestureHandler onGestureEvent={onGestureEvent} enabled={enabled}>
         <Animated.View style={style}>
-          <Image source={PIECES[id]} style={styles.piece} />
+          <Image key={key} source={PIECES[id]} style={styles.piece} />
         </Animated.View>
       </PanGestureHandler>
     </>

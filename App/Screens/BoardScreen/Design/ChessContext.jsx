@@ -13,7 +13,7 @@ const ChessContext = createContext();
 
 function useConst(initialValue) {
   const ref = useRef();
-  if (ref.current === undefined) {
+  if (!ref.current) {
     ref.current = {
       value: typeof initialValue === "function" ? initialValue() : initialValue,
     };
@@ -30,8 +30,10 @@ export const useChess = () => {
 };
 
 export const ChessProvider = ({ children }) => {
+  const fenWithPromotion = "rnbqkbnr/pP6/8/8/8/8/1P6/RNBQKBNR b KQkq - 0 1";
   const chessRef = useConst(() => new Chess());
-  chessRef.i;
+  // const chessRef = new Chess(fenWithPromotion);
+
   const [state, setState] = useState({
     player: "w",
     board: chessRef.board(),
@@ -40,55 +42,101 @@ export const ChessProvider = ({ children }) => {
   });
 
   const onTurn = useCallback(() => {
-    const currentTurn = chessRef.turn();
-    setState((prevState) => ({
-      player: currentTurn,
-      board: chessRef.board(),
-      turn: prevState.turn + 1,
-      isGameFinished: chessRef.isCheckmate() || chessRef.isDraw(),
-    }));
-  }, [chessRef]);
-
-  const undoLastMove = () => {
-    chessRef.undo();
-    setState((prevState) => ({
-      player: prevState.player === "w" ? "b" : "w",
-      board: chessRef.board(),
-      turn: prevState.turn - 1,
-      isGameFinished: false,
-    }));
-  };
-
-  const redoLastMove = () => {
-    const moves = chessRef.history({ verbose: true });
-    if (moves.length > 0) {
-      chessRef.move(moves[moves.length - 1]);
+    if (chessRef) {
+      const currentTurn = chessRef.turn();
       setState((prevState) => ({
-        player: chessRef.turn(),
+        player: currentTurn,
         board: chessRef.board(),
         turn: prevState.turn + 1,
         isGameFinished: chessRef.isCheckmate() || chessRef.isDraw(),
       }));
     }
+  }, [chessRef]);
+
+  const undoLastMove = () => {
+    if (chessRef) {
+      chessRef.undo();
+      setState((prevState) => ({
+        player: prevState.player === "w" ? "b" : "w",
+        board: chessRef.board(),
+        turn: prevState.turn - 1,
+        isGameFinished: false,
+      }));
+    }
+  };
+
+  const redoLastMove = () => {
+    if (chessRef) {
+      const moves = chessRef.history({ verbose: true });
+      if (moves.length > 0) {
+        chessRef.move(moves[moves.length - 1]);
+        setState((prevState) => ({
+          player: chessRef.turn(),
+          board: chessRef.board(),
+          turn: prevState.turn + 1,
+          isGameFinished: chessRef.isCheckmate() || chessRef.isDraw(),
+        }));
+      }
+    }
   };
 
   const saveGame = () => {
-    const history = chessRef.history({ verbose: true });
-    // Implement saving the game history as needed
-    console.log("Game History:", history);
+    if (chessRef) {
+      const history = chessRef.history({ verbose: true });
+      // Implement saving the game history as needed
+      console.log("Game History:", history);
+    }
+  };
+
+  const resetBoard = () => {
+    if (chessRef) {
+      chessRef.reset();
+      setState({
+        player: "w",
+        board: chessRef.board(),
+        turn: 1,
+        isGameFinished: false,
+      });
+    }
+  };
+
+  const changeState = () => {
+    console.log("first");
+    if (chessRef) {
+      const currentTurn = chessRef.turn();
+      chessRef.turn();
+      console.log(currentTurn);
+      currentTurn = chessRef.turn();
+      // setState((prevState) => ({
+      //   player: currentTurn === "w" ? "b" : "w",
+      //   // board: chessRef.board(),
+      //   turn: prevState.turn + 1,
+      //   isGameFinished: chessRef.isCheckmate() || chessRef.isDraw(),
+      // }));
+    }
   };
 
   useEffect(() => {
     const timer = setInterval(() => {
       // Implement your timer logic here
+      // Ensure that chessRef is still defined if needed
     }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [chessRef]); // Include chessRef in the dependency array if needed
 
   return (
     <ChessContext.Provider
-      value={{ state, chessRef, onTurn, undoLastMove, redoLastMove, saveGame }}
+      value={{
+        state,
+        chessRef,
+        onTurn,
+        undoLastMove,
+        redoLastMove,
+        saveGame,
+        resetBoard,
+        changeState,
+      }}
     >
       {children}
     </ChessContext.Provider>
