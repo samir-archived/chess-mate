@@ -21,6 +21,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { Chess } from "chess.js";
 // import { ChessProvider } from './ChessContext';
 import Timer from "./Timer";
+import HandleVibration from "../../../Components/HandleVibration";
 
 const { width } = Dimensions.get("window");
 const { height } = Dimensions.get("window");
@@ -64,6 +65,8 @@ const MasterFile = () => {
   const player = state.player === "w" ? "White" : "Black";
   const nxtPlayer = state.player === "w" ? "Black" : "White";
 
+  const [gameStatus, setGameStatus] = useState(null);
+
   const setTimerValue = 10;
 
   //==>> Timer Reference <==//
@@ -95,6 +98,7 @@ const MasterFile = () => {
                   chess={chessRef}
                   onTurn={onTurn}
                   enabled={state.player === piece.color}
+                  setGameStatus={setGameStatus}
                 />
               );
             }
@@ -103,15 +107,20 @@ const MasterFile = () => {
         )}
       </View>
       <View style={styles.infoContainer}>
-        <Text style={styles.infoText}>{`Game Status: ${
-          chessRef.isDraw()
-            ? `It's a draw`
-            : chessRef.isCheckmate()
-            ? `${nxtPlayer} Won //Game Finished//`
-            : chessRef.inCheck()
-            ? `${player} King is in Danger`
-            : `In progress`
-        }`}</Text>
+        <View style={styles.infoContainer}>
+          <Text style={styles.infoText}>{`Game Status: ${
+            gameStatus != "Success" ? gameStatus :
+            (chessRef.isDraw()
+              ? `It's a draw`
+              : chessRef.isCheckmate()
+              ? `${nxtPlayer} Won //Game Finished//` 
+              : chessRef.inCheck()
+              ? `${player} King is in Danger`
+              : `In progress`)
+          }`}</Text>
+        </View>
+        {chessRef.isCheck() && HandleVibration(250)}
+        {chessRef.isCheckmate() && HandleVibration(500)}
       </View>
       <View style={styles.infoContainer}>
         <Text style={styles.infoText}>{`Next Player: ${nxtPlayer}`}</Text>

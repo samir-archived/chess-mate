@@ -43,8 +43,8 @@ const styles = StyleSheet.create({
     gap: 3,
   },
   image: {
-    width: 160,
-    height: 100,
+    width: 150,
+    height: 80,
     borderRadius: 10,
   },
 });

@@ -11,6 +11,7 @@ import Animated, {
 
 import { toTranslation, SIZE, toPosition } from "./Notation";
 import { useChess } from "./ChessContext";
+import HandleVibration from "../../../Components/HandleVibration";
 
 const styles = StyleSheet.create({
   piece: {
@@ -35,7 +36,15 @@ const PIECES = {
 };
 // ... (import statements)
 
-const Pieces = ({ key, id, startPosition, chess, onTurn, enabled }) => {
+const Pieces = ({
+  key,
+  id,
+  startPosition,
+  chess,
+  onTurn,
+  enabled,
+  setGameStatus,
+}) => {
   const isGestureActive = useSharedValue(false);
   const offsetX = useSharedValue(0);
   const offsetY = useSharedValue(0);
@@ -48,6 +57,7 @@ const Pieces = ({ key, id, startPosition, chess, onTurn, enabled }) => {
         const moves = chess.moves({ verbose: true });
         const from = toPosition({ x: offsetX.value, y: offsetY.value });
         const move = moves.find((m) => m.from === from && m.to === to);
+
         const { x, y } = toTranslation(move ? move.to : from);
         translateX.value = withTiming(
           x,
@@ -58,29 +68,34 @@ const Pieces = ({ key, id, startPosition, chess, onTurn, enabled }) => {
           offsetY.value = translateY.value;
           isGestureActive.value = false;
         });
-
+        
+        const turn = chess.turn() == 'w'? "WHITE" : "BLACK";
         if (move) {
+          setGameStatus("Success");
           // Check for pawn promotion
           const promotionRank = chess.turn() === "w" ? 8 : 1;
-          console.log(move.flags, move.to, move.from, promotionRank);
+
+          // console.log(move.flags, move.from, move.to, promotionRank)
 
           // Check for capturing and promoting on the 8th rank (cp flag)
-          if (
-            (move.flags.includes("cp") &&
-              parseInt(move.to[1]) === promotionRank) ||
-            ((move.flags.includes("c") || move.flags.includes("p")) &&
-              parseInt(to[1]) === promotionRank)
-          ) {
+          if ( (move.flags.includes("cp") || move.flags.includes("np") && parseInt(move.to[1]) === promotionRank) ) {
             // Handle capturing and promoting
             chess.remove(move.from);
             chess.remove(move.to);
             chess.put({ type: "q", color: chess.turn() }, move.from);
-          }
+            setGameStatus( turn + " Pawn promoted to Queen");
+          } 
           chess.move({ from, to });
           switchTurn();
+        } else {
+          // Set game status to indicate invalid move
+          HandleVibration(100);
+          setGameStatus("Invalid move !!");
+          return;
         }
       } catch (err) {
         console.log("Error:", err);
+        setGameStatus("An error occurred. Please try again.");
       }
     },
     [chess, isGestureActive, offsetX, offsetY, onTurn, translateX, translateY]

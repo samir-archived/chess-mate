@@ -6,7 +6,7 @@ import MasterFile from "./Design/MasterFile";
 import { useNavigation } from "@react-navigation/native";
 
 const styles = StyleSheet.create({
-  // Your styles here
+  // styles here
 });
 
 const BoardScreenContent = () => {
