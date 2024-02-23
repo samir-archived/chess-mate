@@ -3,12 +3,18 @@ import { View, Text, StyleSheet, Dimensions, ImageBackground } from "react-nativ
 
 const { width } = Dimensions.get("window");
 const { height } = Dimensions.get("window");
+import Colors from "../../../Utils/Colors";
 
 export const SIZE = width / 8;
 
 export default function Chessboard() {
-  const WHITE = "rgb(100, 133, 68)";
-  const BLACK = "rgb(230, 233, 198)";
+  const WHITE = Colors.BOARDGREEN;
+  const BLACK = Colors.BOARDLIGHTGREEN;
+  // const WHITE = Colors.BLACK;
+  // const BLACK = Colors.WHITE;
+
+  // const WHITE = Colors.GRAY;
+  // const BLACK = Colors.BOARDLIGHTGRAY;
   const verticalAxis = ["1", "2", "3", "4", "5", "6", "7", "8"];
   const horizontalAxis = ["a", "b", "c", "d", "e", "f", "g", "h"];
   let board = [];
@@ -31,7 +37,14 @@ export default function Chessboard() {
       board[i][j] = (
         <View
           key={position}
-          style={[styles.square, styles.piece, { backgroundColor, zIndex: 1 }]}
+          style={[styles.square, styles.piece, { 
+            backgroundColor, 
+            zIndex: 1,
+            borderTopLeftRadius: i == 0 && j == 0 ? 5: 0,
+            borderTopRightRadius: i == 0 && j == 7 ? 5: 0,
+            borderBottomLeftRadius: i == 7 && j == 0 ? 5: 0,
+            borderBottomRightRadius: i == 7 && j == 7 ? 5: 0,
+          }]}
         >
           <Text style={[textStyle, { opacity: j === 0 ? 1 : 0 }]}>
             {verticalAxis[7 - i]}

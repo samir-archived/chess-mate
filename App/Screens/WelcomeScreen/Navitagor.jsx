@@ -9,7 +9,6 @@ import { NavigationContainer } from "@react-navigation/native";
 const Stack = createStackNavigator();
 
 const Navigator = () => {
-  console.log("This function is in OtherFile.js");
   return (
     <NavigationContainer>
       <Stack.Navigator

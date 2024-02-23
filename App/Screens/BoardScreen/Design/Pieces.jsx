@@ -68,8 +68,8 @@ const Pieces = ({
           offsetY.value = translateY.value;
           isGestureActive.value = false;
         });
-        
-        const turn = chess.turn() == 'w'? "WHITE" : "BLACK";
+
+        const turn = chess.turn() == "w" ? "WHITE" : "BLACK";
         if (move) {
           setGameStatus("Success");
           // Check for pawn promotion
@@ -78,13 +78,17 @@ const Pieces = ({
           // console.log(move.flags, move.from, move.to, promotionRank)
 
           // Check for capturing and promoting on the 8th rank (cp flag)
-          if ( (move.flags.includes("cp") || move.flags.includes("np") && parseInt(move.to[1]) === promotionRank) ) {
+          if (
+            move.flags.includes("cp") ||
+            (move.flags.includes("np") &&
+              parseInt(move.to[1]) === promotionRank)
+          ) {
             // Handle capturing and promoting
             chess.remove(move.from);
             chess.remove(move.to);
             chess.put({ type: "q", color: chess.turn() }, move.from);
-            setGameStatus( turn + " Pawn promoted to Queen");
-          } 
+            setGameStatus(turn + " Pawn promoted to Queen");
+          }
           chess.move({ from, to });
           switchTurn();
         } else {
@@ -108,8 +112,16 @@ const Pieces = ({
       isGestureActive.value = true;
     },
     onActive: ({ translationX, translationY }) => {
-      translateX.value = offsetX.value + translationX;
-      translateY.value = offsetY.value + translationY;
+      if (
+        translateX.value >= 0 &&
+        translateY.value <= 350 &&
+        translateX.value <= 350 &&
+        translateY.value >= 0
+      ) 
+      {
+        translateX.value = offsetX.value + translationX;
+        translateY.value = offsetY.value + translationY;
+      }
     },
     onEnd: () => {
       runOnJS(movePiece)(

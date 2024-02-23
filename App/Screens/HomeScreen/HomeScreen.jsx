@@ -16,18 +16,7 @@ export default function HomeScreen() {
       <View style={styles.subSection}>
         {/* Categories */}
         <Tutorials />
-        {/* Your Record */}
-        <Heading text="Game Records" isRecord={true} />
-        {/* <Text style={RecordCss.heading}>Game Records</Text> */}
-        <View style={RecordCss.tableHeader}>
-          <Text style={[RecordCss.tableCell, RecordCss.headerCell]}>
-            Position
-          </Text>
-          <Text style={[RecordCss.tableCell, RecordCss.headerCell]}>
-            Player
-          </Text>
-          <Text style={[RecordCss.tableCell, RecordCss.headerCell]}>Time</Text>
-        </View>
+        {/* World Record */}
         <RecordScreen />
         {/* Play Button */}
       </View>

@@ -38,7 +38,7 @@ const RecordCss = StyleSheet.create({
         fontFamily: 'outfit'
       },
       scrollContainer: {
-        height: 225,
+        height: 270,
       },
   });
 

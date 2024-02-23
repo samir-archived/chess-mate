@@ -4,7 +4,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { useChess } from "./Design/ChessContext";
 import MasterFile from "./Design/MasterFile";
 import { useNavigation } from "@react-navigation/native";
-
+import Colors from "../../Utils/Colors";
+import { height } from "./Design/Notation";
 const styles = StyleSheet.create({
   // styles here
 });
@@ -27,7 +28,7 @@ const BoardScreen = () => {
   const navigation = useNavigation();
 
   return (
-    <View>
+    <View style={{backgroundColor: Colors.LIGHTGRAY, height}}>
       <TouchableOpacity
         style={{
           display: "flex",

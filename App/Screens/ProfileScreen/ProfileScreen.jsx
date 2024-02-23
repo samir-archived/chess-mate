@@ -1,20 +1,16 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  Switch,
-} from "react-native";
+import { View, StyleSheet } from "react-native";
 import Header from "../../Components/Header";
 import ChessboardStyles from "./ChessboardStyles";
+import Colors from "../../Utils/Colors";
+import { height } from "../BoardScreen/Design/Notation";
+import ChessPlayerStats from "./ChessPlayerStats";
 
 const ProfileSection = () => {
-  const [selectedChessboard, setSelectedChessboard] = useState('classic'); // Default chessboard style
+  const [selectedChessboard, setSelectedChessboard] = useState("first"); // Default chessboard style
 
   const [soundEnabled, setSoundEnabled] = useState(true);
-  
+
   // Handler function to update the selected chessboard style
   const handleChessboardChange = (option) => {
     setSelectedChessboard(option);
@@ -26,27 +22,37 @@ const ProfileSection = () => {
     // logic to control the sound in your application
   };
 
+  // Assuming you have player stats data
+  const playerStats = {
+    playerName: 'John Doe',
+    totalGames: 100,
+    wins: 70,
+    draws: 20,
+    losses: 10,
+  };
+
   return (
     <View style={styles.container}>
-      <Header isProfile = {true}/>
-      <ChessboardStyles selectedStyle={selectedChessboard} onSelectStyle={handleChessboardChange} />
-
-      <View style={styles.soundToggleContainer}>
-        <Text style={styles.sectionTitle}>Sound:</Text>
-        <Switch
-          value={soundEnabled}
-          onValueChange={toggleSound}
-          style={styles.soundToggle}
+      <Header isProfile={true} />
+      <View style={styles.subContainer}>
+        <ChessPlayerStats {...playerStats} />
+        <ChessboardStyles
+          selectedStyle={selectedChessboard}
+          onSelectStyle={handleChessboardChange}
         />
+        
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    // alignItems: 'center',
-    // marginTop: 20,
+  container: {},
+  subContainer: {
+    padding: "4%",
+    backgroundColor: Colors.LIGHTGRAY,
+    // backgroundColor: Colors.LIGHTGREEN,
+    height: height,
   },
   sectionTitle: {
     fontSize: 16,

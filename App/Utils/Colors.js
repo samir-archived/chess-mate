@@ -8,4 +8,12 @@ export default{
     LIGHTGRAY: '#EDEDED',
     GREEN: '#416D19',
     LIGHTGREEN: '#9BCF53',
+    BOARDGRAY: 'darkgray',
+    BOARDLIGHTGRAY: 'lightgray',
+    BOARDGREEN: "rgb(100, 133, 68)",
+    BOARDLIGHTGREEN: "rgb(230, 233, 198)",
+    WIN: '#65B741',
+    LOOSE: '#FF6868',
+    TOTAL: '#994D1C',
+    DRAW: '#1D2B53',
 }

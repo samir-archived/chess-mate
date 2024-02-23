@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, ScrollView, FlatList, StyleSheet } from "react-native";
 import RecordCss from "../../Utils/RecordCss";
 import Colors from "../../Utils/Colors";
+import Heading from "../../Components/Heading";
 
 const RecordScreen = () => {
   const gameRecords = [
@@ -45,13 +46,25 @@ const RecordScreen = () => {
 
   return (
     // <ScrollView style={RecordCss.scrollContainer} showsVerticalScrollIndicator={false} >
-    <View style={[RecordCss.container, RecordCss.scrollContainer]}>
-      <FlatList
-        data={gameRecords}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => index.toString()}
-        showsVerticalScrollIndicator={false}
-      />
+    <View>
+      <Heading text="Game Records" isRecord={true} />
+      <View style={[RecordCss.container, RecordCss.scrollContainer]}>
+        <View style={RecordCss.tableHeader}>
+          <Text style={[RecordCss.tableCell, RecordCss.headerCell]}>
+            Position
+          </Text>
+          <Text style={[RecordCss.tableCell, RecordCss.headerCell]}>
+            Player
+          </Text>
+          <Text style={[RecordCss.tableCell, RecordCss.headerCell]}>Time</Text>
+        </View>
+        <FlatList
+          data={gameRecords}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()}
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
     </View>
     // </ScrollView>
   );

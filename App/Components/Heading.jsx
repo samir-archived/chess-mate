@@ -2,22 +2,27 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
-export default function Heading({ text, isViewAll = false, isRecord = false }) {
+export default function Heading({
+  text,
+  isViewAll = false,
+  isRecord = false,
+  isStats = false,
+}) {
   const navigation = useNavigation();
   const styles = StyleSheet.create({
     container: {
       display: "flex",
       flexDirection: "row",
       alignItems: "center",
-      alignSelf: isRecord? 'center': 'stretch',
+      alignSelf: isRecord || isStats ? "center" : "stretch",
       justifyContent: "space-between",
     },
     heading: {
       fontSize: 20,
       fontFamily: "outfit-medium",
       marginBottom: 10,
-      marginLeft: !isRecord ? 8 : 0,
-      marginTop: isRecord ? 15 : 0,
+      marginLeft: !isRecord ? 8 : isStats ? 0 : 0,
+      marginTop: isRecord ? 15 : isStats ? 0 : 0,
     },
   });
   return (
