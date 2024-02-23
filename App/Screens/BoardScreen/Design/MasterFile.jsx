@@ -22,6 +22,7 @@ import { Chess } from "chess.js";
 // import { ChessProvider } from './ChessContext';
 import Timer from "./Timer";
 import HandleVibration from "../../../Components/HandleVibration";
+import ModalComponent from "../../../Components/ModalComponent";
 
 const { width } = Dimensions.get("window");
 const { height } = Dimensions.get("window");
@@ -64,6 +65,7 @@ const MasterFile = () => {
   } = useChess();
   const player = state.player === "w" ? "White" : "Black";
   const nxtPlayer = state.player === "w" ? "Black" : "White";
+  const [isModalVisible, setModalVisible] = useState(false);
 
   const [gameStatus, setGameStatus] = useState(null);
 
@@ -77,6 +79,18 @@ const MasterFile = () => {
 
   const handleReset = () => {
     timerRef.current.reset();
+  };
+
+  const onSaveGame = () => {
+    resetBoard();
+    handleReset();
+    handlePause();
+  };
+  
+  const onCancelGame = () => {
+    resetBoard();
+    handleReset();
+    handlePause();
   };
   return (
     <View style={styles.mainContainer}>
@@ -99,6 +113,7 @@ const MasterFile = () => {
                   onTurn={onTurn}
                   enabled={state.player === piece.color}
                   setGameStatus={setGameStatus}
+                  setModalVisible={setModalVisible}
                 />
               );
             }
@@ -109,33 +124,33 @@ const MasterFile = () => {
       <View style={styles.infoContainer}>
         <View style={styles.infoContainer}>
           <Text style={styles.infoText}>{`Game Status: ${
-            gameStatus != "Success" ? gameStatus :
-            (chessRef.isDraw()
+            gameStatus != "Success"
+              ? gameStatus
+              : chessRef.isDraw()
               ? `It's a draw`
               : chessRef.isCheckmate()
-              ? `${nxtPlayer} Won //Game Finished//` 
+              ? `${nxtPlayer} Won //Game Finished//`
               : chessRef.inCheck()
               ? `${player} King is in Danger`
-              : `In progress`)
+              : `In progress`
           }`}</Text>
         </View>
-        {chessRef.isCheck() && HandleVibration(250)}
-        {chessRef.isCheckmate() && HandleVibration(500)}
       </View>
       <View style={styles.infoContainer}>
         <Text style={styles.infoText}>{`Next Player: ${nxtPlayer}`}</Text>
       </View>
       <View style={styles.infoContainer}>
-        <TouchableOpacity
-          onPress={() => {
-            resetBoard();
-            handleReset();
-            handlePause();
-          }}
-        >
+        <TouchableOpacity onPress={onCancelGame}>
           <MaterialIcons name="restart-alt" size={24} color="black" />
         </TouchableOpacity>
       </View>
+
+      <ModalComponent
+        isModalVisible={isModalVisible}
+        setModalVisible={setModalVisible}
+        onSaveGame={onSaveGame}
+        onCancelGame={onCancelGame}
+      />
     </View>
   );
 };

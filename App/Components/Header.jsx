@@ -87,7 +87,7 @@ export default function Header({ isProfile = false }) {
                         alignSelf: "center",
                       }}
                     >
-                      LogIn
+                      Log In
                     </Text>
                   ) : (
                     <Text
@@ -98,7 +98,7 @@ export default function Header({ isProfile = false }) {
                         alignSelf: "center",
                       }}
                     >
-                      LogOut
+                      Log Out
                     </Text>
                   ))}
                 {isProfile &&

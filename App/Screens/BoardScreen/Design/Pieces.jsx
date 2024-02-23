@@ -12,6 +12,7 @@ import Animated, {
 import { toTranslation, SIZE, toPosition } from "./Notation";
 import { useChess } from "./ChessContext";
 import HandleVibration from "../../../Components/HandleVibration";
+import ModalComponent from "../../../Components/ModalComponent";
 
 const styles = StyleSheet.create({
   piece: {
@@ -34,7 +35,6 @@ const PIECES = {
   wk: require("../../../../assets/pieces/wk.png"),
   wp: require("../../../../assets/pieces/wp.png"),
 };
-// ... (import statements)
 
 const Pieces = ({
   key,
@@ -44,6 +44,7 @@ const Pieces = ({
   onTurn,
   enabled,
   setGameStatus,
+  setModalVisible,
 }) => {
   const isGestureActive = useSharedValue(false);
   const offsetX = useSharedValue(0);
@@ -90,7 +91,14 @@ const Pieces = ({
             setGameStatus(turn + " Pawn promoted to Queen");
           }
           chess.move({ from, to });
+
           switchTurn();
+          if (chess.isCheckmate()) {
+            setModalVisible(true);
+            HandleVibration(500);
+          } else if (chess.isCheck()) {
+            HandleVibration(250);
+          }
         } else {
           // Set game status to indicate invalid move
           HandleVibration(100);
@@ -117,8 +125,7 @@ const Pieces = ({
         translateY.value <= 350 &&
         translateX.value <= 350 &&
         translateY.value >= 0
-      ) 
-      {
+      ) {
         translateX.value = offsetX.value + translationX;
         translateY.value = offsetY.value + translationY;
       }
@@ -175,6 +182,10 @@ const Pieces = ({
           <Image key={key} source={PIECES[id]} style={styles.piece} />
         </Animated.View>
       </PanGestureHandler>
+      {/* <ModalComponent
+        isModalVisible={isModalVisible}
+        setModalVisible={setModalVisible}
+      /> */}
     </>
   );
 };
