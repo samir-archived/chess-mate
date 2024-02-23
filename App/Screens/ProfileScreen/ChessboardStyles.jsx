@@ -12,13 +12,12 @@ const ChessboardStyles = ({ selectedStyle, onSelectStyle }) => {
     // fourth: { white: Colors.WHITE, black: Colors.BLACK },
     // fourth: { white: "", black: "" },
   };
-
+  const style = "first";
   return (
     <View style={styles.container}>
       <Text style={styles.sectionTitle}>Chessboard Style</Text>
-
       <View style={styles.optionsContainer}>
-        {Object.keys(colorOptions).map((style, index) => {
+        {Object.keys(colorOptions).map((style, index) => (
           <TouchableOpacity
             key={style}
             style={[
@@ -31,8 +30,8 @@ const ChessboardStyles = ({ selectedStyle, onSelectStyle }) => {
               white={colorOptions[style].white}
               black={colorOptions[style].black}
             />
-          </TouchableOpacity>;
-        })}
+          </TouchableOpacity>
+        ))}
       </View>
     </View>
   );
@@ -48,7 +47,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   optionsContainer: {
-    // flexDirection: "row",
+    flexDirection: "row",
     gap: 10,
   },
   optionButton: {

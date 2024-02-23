@@ -28,7 +28,6 @@ const Chessboard = ({ white, black }) => {
         );
       }
     }
-    console.log("first")
 
     return squares;
   };
