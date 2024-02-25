@@ -17,7 +17,7 @@ import Chessboard from "./Chessboard";
 import Pieces from "./Pieces";
 import { SIZE } from "./Notation";
 import { useChess } from "./ChessContext";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import { Chess } from "chess.js";
 // import { ChessProvider } from './ChessContext';
 import Timer from "./Timer";
@@ -82,11 +82,11 @@ const MasterFile = () => {
   };
 
   const onSaveGame = () => {
+    saveGame();
     resetBoard();
     handleReset();
     handlePause();
   };
-  
   const onCancelGame = () => {
     resetBoard();
     handleReset();
@@ -140,6 +140,9 @@ const MasterFile = () => {
         <Text style={styles.infoText}>{`Next Player: ${nxtPlayer}`}</Text>
       </View>
       <View style={styles.infoContainer}>
+        <TouchableOpacity onPress={undoLastMove}>
+        <FontAwesome name="arrow-left" size={24} color="black" />
+        </TouchableOpacity>
         <TouchableOpacity onPress={onCancelGame}>
           <MaterialIcons name="restart-alt" size={24} color="black" />
         </TouchableOpacity>

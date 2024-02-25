@@ -85,8 +85,6 @@ const Pieces = ({
               parseInt(move.to[1]) === promotionRank)
           ) {
             // Handle capturing and promoting
-            chess.remove(move.from);
-            chess.remove(move.to);
             chess.put({ type: "q", color: chess.turn() }, move.from);
             setGameStatus(turn + " Pawn promoted to Queen");
           }

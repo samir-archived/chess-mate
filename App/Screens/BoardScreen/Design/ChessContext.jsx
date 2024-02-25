@@ -28,6 +28,8 @@ export const useChess = () => {
   }
   return context;
 };
+// Assuming you have a variable to store FEN
+let fenHistory = [];
 
 export const ChessProvider = ({ children }) => {
   const fenWithPromotion = "rnbqkbnr/pP6/8/8/8/8/1P6/RNBQKBNR b KQkq - 0 1";
@@ -55,28 +57,48 @@ export const ChessProvider = ({ children }) => {
 
   const undoLastMove = () => {
     if (chessRef) {
-      chessRef.undo();
-      setState((prevState) => ({
-        player: prevState.player === "w" ? "b" : "w",
-        board: chessRef.board(),
-        turn: prevState.turn - 1,
-        isGameFinished: false,
-      }));
+      const moves = chessRef.history({ verbose: true });
+      if (moves.length > 0) {
+        const lastMove = chessRef.undo();
+        if (lastMove) {
+          const promotionSquare = lastMove.from;
+          const promotedPiece = chessRef.get(promotionSquare);
+          // Check if the last move was a promotion and revert it
+          if (promotedPiece && promotedPiece.type === "q") {
+            chessRef.put(
+              { type: "p", color: chessRef.turn() },
+              promotionSquare
+            );
+          }
+        }
+
+        // Store the undone move and current FEN for redo
+        // const currentFen = chessRef.fen();
+        // fenHistory.push({ move: lastMove, fen: currentFen });
+
+        setState((prevState) => ({
+          player: prevState.player === "w" ? "b" : "w",
+          board: chessRef.board(),
+          turn: prevState.turn - 1,
+          isGameFinished: false,
+        }));
+      }
     }
   };
 
   const redoLastMove = () => {
-    if (chessRef) {
-      const moves = chessRef.history({ verbose: true });
-      if (moves.length > 0) {
-        chessRef.move(moves[moves.length - 1]);
-        setState((prevState) => ({
-          player: chessRef.turn(),
-          board: chessRef.board(),
-          turn: prevState.turn + 1,
-          isGameFinished: chessRef.isCheckmate() || chessRef.isDraw(),
-        }));
-      }
+    console.log(fenHistory.length);
+    if (chessRef && fenHistory.length > 0) {
+      const { move, fen } = fenHistory.pop();
+      chessRef.load(fen); // Load the FEN to restore the board state
+      chessRef.move(move); // Reapply the move
+
+      setState((prevState) => ({
+        player: chessRef.turn(),
+        board: chessRef.board(),
+        turn: prevState.turn + 1,
+        isGameFinished: chessRef.isCheckmate() || chessRef.isDraw(),
+      }));
     }
   };
 
@@ -101,11 +123,9 @@ export const ChessProvider = ({ children }) => {
   };
 
   const changeState = () => {
-    console.log("first");
     if (chessRef) {
       const currentTurn = chessRef.turn();
       chessRef.turn();
-      console.log(currentTurn);
       currentTurn = chessRef.turn();
       // setState((prevState) => ({
       //   player: currentTurn === "w" ? "b" : "w",
