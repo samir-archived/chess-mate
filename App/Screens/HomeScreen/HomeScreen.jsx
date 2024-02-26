@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Header from "../../Components/Header";
 import Tutorials from "./Tutorials";
 import Play from "./Play";
@@ -7,8 +7,15 @@ import RecordScreen from "./RecordScreen";
 import RecordCss from "../../Utils/RecordCss";
 import Heading from "../../Components/Heading";
 import Colors from "../../Utils/Colors";
+import { useChess } from "../BoardScreen/Design/ChessContext";
 
 export default function HomeScreen() {
+  const { resetRecord } = useChess();
+
+  const onPress = () => {
+    resetRecord()
+  }
+
   return (
     <View>
       {/* Header */}
@@ -20,12 +27,27 @@ export default function HomeScreen() {
         <RecordScreen />
         {/* Play Button */}
       </View>
+      {/* <TouchableOpacity style={styles.touchable} onPress={onPress}>
+      <Text style={styles.text}>Reset Record</Text>
+    </TouchableOpacity> */}
       <Play />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  touchable: {
+    backgroundColor: '#007BFF',
+    padding: 10,
+    borderRadius: 5,
+    margin: 10,
+  },
+  text: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
   subSection: {
     padding: "4%",
     backgroundColor: Colors.LIGHTGRAY,

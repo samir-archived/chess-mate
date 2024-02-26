@@ -1,22 +1,22 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, FlatList, StyleSheet } from "react-native";
 import RecordCss from "../../Utils/RecordCss";
 import Colors from "../../Utils/Colors";
 import Heading from "../../Components/Heading";
+import { useChess } from "../BoardScreen/Design/ChessContext";
 
 const RecordScreen = () => {
-  const gameRecords = [
-    { player: "Samir", time: "9:12:0" },
-    { player: "Utsav", time: "10:12:0" },
-    { player: "Rupak", time: "10:12:03" },
-    { player: "Samir", time: "11:12:0" },
-    { player: "Utsav", time: "11:12:0" },
-    { player: "Rupak", time: "11:12:03" },
-    { player: "Samir", time: "11:12:0" },
-    { player: "Utsav", time: "11:12:0" },
-    { player: "Rupak", time: "11:12:03" },
-    // Add more records as needed
-  ];
+  const { getSavedGames } = useChess();
+  const [savedGames, setSavedGames] = useState([]);
+
+  useEffect(() => {
+    const fetchSavedGames = async () => {
+      const gameRecords = await getSavedGames();
+      setSavedGames(gameRecords);
+    };
+
+    fetchSavedGames();
+  }, []);
   let count = 0;
 
   const renderItem = ({ item }) => (
@@ -59,7 +59,7 @@ const RecordScreen = () => {
           <Text style={[RecordCss.tableCell, RecordCss.headerCell]}>Time</Text>
         </View>
         <FlatList
-          data={gameRecords}
+          data={savedGames}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
           showsVerticalScrollIndicator={false}

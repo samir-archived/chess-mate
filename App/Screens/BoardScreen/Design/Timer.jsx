@@ -1,6 +1,6 @@
 // Timer.jsx
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 
 const Timer = forwardRef(({ limitInMinutes }, ref) => {
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
@@ -32,10 +32,11 @@ const Timer = forwardRef(({ limitInMinutes }, ref) => {
     setPaused(!isPaused);
   };
 
-  //==> Expose functions to parent component using useImperativeHandle <==//
+  //==> Expose functions to the parent component using useImperativeHandle <==//
   useImperativeHandle(ref, () => ({
     pause: togglePause,
     reset: resetTimer,
+    now: () => `${remainingMinutes}:${remainingSecondsDisplay < 10 ? "0" : ""}${remainingSecondsDisplay}`,
   }));
 
   return (
@@ -56,21 +57,6 @@ const styles = StyleSheet.create({
   },
   timerText: {
     fontSize: 18,
-    fontWeight: "bold",
-  },
-  buttonsContainer: {
-    flexDirection: "row",
-    marginTop: 10,
-  },
-  controlButton: {
-    padding: 10,
-    marginRight: 10,
-    backgroundColor: "#007BFF",
-    borderRadius: 5,
-  },
-  controlButtonText: {
-    color: "#fff",
-    fontSize: 16,
     fontWeight: "bold",
   },
 });

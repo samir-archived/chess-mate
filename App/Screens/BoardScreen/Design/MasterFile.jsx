@@ -72,7 +72,7 @@ const MasterFile = () => {
   const setTimerValue = 10;
 
   //==>> Timer Reference <==//
-  const timerRef = useRef();
+  const timerRef = useRef(null);
   const handlePause = () => {
     timerRef.current.pause();
   };
@@ -82,7 +82,12 @@ const MasterFile = () => {
   };
 
   const onSaveGame = () => {
-    saveGame();
+    if (timerRef.current && timerRef.current.now) {
+      const currentTime = timerRef.current.now();
+      saveGame(currentTime);
+    } else {
+      console.error('Invalid ref or method not available.');
+    }
     resetBoard();
     handleReset();
     handlePause();
@@ -141,13 +146,13 @@ const MasterFile = () => {
       </View>
       <View style={styles.infoContainer}>
         <TouchableOpacity onPress={undoLastMove}>
-        <FontAwesome name="arrow-left" size={24} color="black" />
+          <FontAwesome name="arrow-left" size={24} color="black" />
         </TouchableOpacity>
         <TouchableOpacity onPress={onCancelGame}>
           <MaterialIcons name="restart-alt" size={24} color="black" />
         </TouchableOpacity>
       </View>
-
+      {isModalVisible && handlePause}
       <ModalComponent
         isModalVisible={isModalVisible}
         setModalVisible={setModalVisible}

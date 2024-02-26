@@ -8,6 +8,8 @@ import React, {
   useEffect,
 } from "react";
 import { Chess } from "chess.js";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Timer from "./Timer";
 
 const ChessContext = createContext();
 
@@ -64,12 +66,12 @@ export const ChessProvider = ({ children }) => {
           const promotionSquare = lastMove.from;
           const promotedPiece = chessRef.get(promotionSquare);
           // Check if the last move was a promotion and revert it
-          if (promotedPiece && promotedPiece.type === "q") {
-            chessRef.put(
-              { type: "p", color: chessRef.turn() },
-              promotionSquare
-            );
-          }
+          // if (promotedPiece && promotedPiece.type === "q") {
+          //   chessRef.put(
+          //     { type: "p", color: chessRef.turn() },
+          //     promotionSquare
+          //   );
+          // }
         }
 
         // Store the undone move and current FEN for redo
@@ -102,11 +104,81 @@ export const ChessProvider = ({ children }) => {
     }
   };
 
-  const saveGame = () => {
+  const resetRecord = async () => {
+    try {
+      await AsyncStorage.removeItem("savedGames");
+      console.log("Data removed successfully");
+    } catch (error) {
+      console.error("Error removing data: ", error);
+    }
+  };
+
+  const saveGame = async (currentTime) => {
     if (chessRef) {
-      const history = chessRef.history({ verbose: true });
-      // Implement saving the game history as needed
-      console.log("Game History:", history);
+      try {
+        const history = chessRef.history({ verbose: true });
+        const wonPlayer = chessRef.turn() === "w" ? "BLACK" : "WHITE";
+
+        const newDetails = {
+          player: wonPlayer,
+          time: currentTime,
+          moves: history,
+        };
+
+        // Get existing games from AsyncStorage
+        const existingData = await AsyncStorage.getItem("savedGames");
+
+        // Parse existing JSON data or initialize as an empty array
+        const existingGames = existingData ? JSON.parse(existingData) : [];
+
+        // Add the new game record to the existing array
+        existingGames.push(newDetails);
+
+        // Save the updated array back to AsyncStorage
+        await AsyncStorage.setItem("savedGames", JSON.stringify(existingGames));
+
+        console.log("Game saved successfully.");
+      } catch (error) {
+        console.error("Error saving game: ", error);
+      }
+    }
+  };
+
+  const getSavedGames = async () => {
+    try {
+      const existingData = await AsyncStorage.getItem("savedGames");
+
+      if (!existingData) {
+        // No saved games found
+        return [];
+      }
+
+      const existingGames = JSON.parse(existingData);
+
+      if (!Array.isArray(existingGames)) {
+        // Data is not in the expected format
+        console.error("Invalid data format in AsyncStorage");
+        return [];
+      }
+
+      // Assuming each record has 'player' and 'time' fields
+      const gameRecords = existingGames.map((record) => ({
+        player: record.player,
+        time: record.time,
+      }));
+
+      // Sort the gameRecords array based on the time property
+      // gameRecords.sort((a, b) => {
+      //   // Assuming time is in the format "hh:mm:ss"
+      //   const timeA = new Date(`2000-01-01T${a.time}`);
+      //   const timeB = new Date(`2000-01-01T${b.time}`);
+      //   return timeA - timeB;
+      // });
+
+      return gameRecords;
+    } catch (error) {
+      console.error("Error retrieving saved games: ", error);
+      return [];
     }
   };
 
@@ -154,8 +226,10 @@ export const ChessProvider = ({ children }) => {
         undoLastMove,
         redoLastMove,
         saveGame,
+        getSavedGames,
         resetBoard,
         changeState,
+        resetRecord,
       }}
     >
       {children}
