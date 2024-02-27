@@ -1,5 +1,11 @@
 import React from "react";
-import { View, Text, StyleSheet, Dimensions, ImageBackground } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  ImageBackground,
+} from "react-native";
 
 const { width } = Dimensions.get("window");
 const { height } = Dimensions.get("window");
@@ -7,7 +13,10 @@ import Colors from "../../../Utils/Colors";
 
 export const SIZE = width / 8;
 
-export default function Chessboard() {
+export default function Chessboard({
+  highlightedPosition,
+  setHighlightedPosition,
+}) {
   const WHITE = Colors.BOARDGREEN;
   const BLACK = Colors.BOARDLIGHTGREEN;
   // const WHITE = Colors.BLACK;
@@ -32,19 +41,26 @@ export default function Chessboard() {
       const color = isBlackSquare ? WHITE : BLACK;
       const textStyle = { fontWeight: "500", color };
       const position = `${horizontalAxis[j]}${verticalAxis[7 - i]}`;
+      const borderColor= highlightedPosition.includes(position) ? 'red' : 'transparent';
       //   const piece = // Determine piece based on position (e.g., rook on corners, pawns on rank 2)
 
       board[i][j] = (
         <View
           key={position}
-          style={[styles.square, styles.piece, { 
-            backgroundColor, 
-            zIndex: 1,
-            borderTopLeftRadius: i == 0 && j == 0 ? 5: 0,
-            borderTopRightRadius: i == 0 && j == 7 ? 5: 0,
-            borderBottomLeftRadius: i == 7 && j == 0 ? 5: 0,
-            borderBottomRightRadius: i == 7 && j == 7 ? 5: 0,
-          }]}
+          style={[
+            styles.square,
+            styles.piece,
+            {
+              borderWidth: 2,
+              borderColor,
+              backgroundColor,
+              zIndex: 1,
+              borderTopLeftRadius: i == 0 && j == 0 ? 5 : 0,
+              borderTopRightRadius: i == 0 && j == 7 ? 5 : 0,
+              borderBottomLeftRadius: i == 7 && j == 0 ? 5 : 0,
+              borderBottomRightRadius: i == 7 && j == 7 ? 5 : 0,
+            },
+          ]}
         >
           <Text style={[textStyle, { opacity: j === 0 ? 1 : 0 }]}>
             {verticalAxis[7 - i]}

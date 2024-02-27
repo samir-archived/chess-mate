@@ -236,3 +236,18 @@ export const ChessProvider = ({ children }) => {
     </ChessContext.Provider>
   );
 };
+
+
+const PieceContext = createContext();
+
+export const PieceProvider = ({ children }) => {
+  const [isTapped, setTapped] = useState(false);
+
+  return (
+    <PieceContext.Provider value={{ isTapped, setTapped }}>
+      {children}
+    </PieceContext.Provider>
+  );
+};
+
+export const usePieceContext = () => useContext(PieceContext);

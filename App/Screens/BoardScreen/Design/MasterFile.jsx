@@ -1,11 +1,5 @@
 // MasterFile.jsx
-import React, {
-  useRef,
-  useState,
-  useEffect,
-  forwardRef,
-  useImperativeHandle,
-} from "react";
+import React, { useRef, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -19,10 +13,11 @@ import { SIZE } from "./Notation";
 import { useChess } from "./ChessContext";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import { Chess } from "chess.js";
-// import { ChessProvider } from './ChessContext';
 import Timer from "./Timer";
 import HandleVibration from "../../../Components/HandleVibration";
 import ModalComponent from "../../../Components/ModalComponent";
+import PieceHint from "./PieceHint";
+import calculatePossibleMoves from "./calculatePossibleMoves";
 
 const { width } = Dimensions.get("window");
 const { height } = Dimensions.get("window");
@@ -50,6 +45,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
   },
+  pieceHint: {
+    position: "relative",
+    alignItems: "center",
+  },
 });
 
 const MasterFile = () => {
@@ -71,6 +70,25 @@ const MasterFile = () => {
 
   const setTimerValue = 10;
 
+  //==>> Piece Hint <<==//
+  const [putPieceType, setPutPieceType] = useState("");
+  const [putPosition, setPutPosition] = useState("");
+  const [isTapped, setIsTapped] = useState(false);
+  const [highlightedPosition, setHighlightedPosition] = useState([]);
+  if (isTapped) {
+    calculateMoves = calculatePossibleMoves(
+      putPieceType,
+      putPosition,
+      chessRef
+    );
+    setHighlightedPosition(calculateMoves);
+    setIsTapped(false);
+  }
+  const clearHighlightedPosition = () => {
+    if (highlightedPosition.length > 0) {
+      setHighlightedPosition([]); // Clear only if not already empty
+    }
+  };
   //==>> Timer Reference <==//
   const timerRef = useRef(null);
   const handlePause = () => {
@@ -86,13 +104,15 @@ const MasterFile = () => {
       const currentTime = timerRef.current.now();
       saveGame(currentTime);
     } else {
-      console.error('Invalid ref or method not available.');
+      console.error("Invalid ref or method not available.");
     }
+    clearHighlightedPosition();
     resetBoard();
     handleReset();
     handlePause();
   };
   const onCancelGame = () => {
+    clearHighlightedPosition();
     resetBoard();
     handleReset();
     handlePause();
@@ -105,7 +125,7 @@ const MasterFile = () => {
         <Text style={styles.infoText}>{`Player: ${player}`}</Text>
       </View>
       <View style={styles.middleContainer}>
-        <Chessboard />
+        <Chessboard highlightedPosition={highlightedPosition} />
         {state.board.map((row, y) =>
           row.map((piece, x) => {
             if (piece !== null) {
@@ -119,6 +139,12 @@ const MasterFile = () => {
                   enabled={state.player === piece.color}
                   setGameStatus={setGameStatus}
                   setModalVisible={setModalVisible}
+                  setIsTapped={setIsTapped}
+                  putPieceType={putPieceType}
+                  putPosition={putPosition}
+                  updatePutPiece={(type) => setPutPieceType(type)}
+                  updatePutPosition={(position) => setPutPosition(position)}
+                  clearHighlightedPosition={clearHighlightedPosition}
                 />
               );
             }
@@ -141,16 +167,30 @@ const MasterFile = () => {
           }`}</Text>
         </View>
       </View>
-      <View style={styles.infoContainer}>
+      {/* <View style={styles.infoContainer}>
         <Text style={styles.infoText}>{`Next Player: ${nxtPlayer}`}</Text>
-      </View>
+      </View> */}
       <View style={styles.infoContainer}>
-        <TouchableOpacity onPress={undoLastMove}>
+        <TouchableOpacity
+          onPress={() => {
+            clearHighlightedPosition();
+            undoLastMove();
+          }}
+        >
           <FontAwesome name="arrow-left" size={24} color="black" />
         </TouchableOpacity>
         <TouchableOpacity onPress={onCancelGame}>
           <MaterialIcons name="restart-alt" size={24} color="black" />
         </TouchableOpacity>
+      </View>
+      <View style={styles.pieceHint}>
+        {isTapped && (
+          <PieceHint
+            pieceType={putPieceType}
+            position={putPosition}
+            possibleMoves={calculateMoves}
+          />
+        )}
       </View>
       {isModalVisible && handlePause}
       <ModalComponent

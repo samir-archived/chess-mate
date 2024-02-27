@@ -1,6 +1,10 @@
-import React, { useCallback } from "react";
-import { StyleSheet, Image } from "react-native";
-import { PanGestureHandler } from "react-native-gesture-handler";
+import React, { useCallback, useRef, useState } from "react";
+import { View, StyleSheet, Image } from "react-native";
+import {
+  TapGestureHandler,
+  State,
+  PanGestureHandler,
+} from "react-native-gesture-handler";
 import Animated, {
   runOnJS,
   useAnimatedGestureHandler,
@@ -12,7 +16,6 @@ import Animated, {
 import { toTranslation, SIZE, toPosition } from "./Notation";
 import { useChess } from "./ChessContext";
 import HandleVibration from "../../../Components/HandleVibration";
-import ModalComponent from "../../../Components/ModalComponent";
 
 const styles = StyleSheet.create({
   piece: {
@@ -45,6 +48,13 @@ const Pieces = ({
   enabled,
   setGameStatus,
   setModalVisible,
+  isTapped,
+  setIsTapped,
+  putPieceType,
+  putPosition,
+  updatePutPiece,
+  updatePutPosition,
+  clearHighlightedPosition
 }) => {
   const isGestureActive = useSharedValue(false);
   const offsetX = useSharedValue(0);
@@ -103,6 +113,7 @@ const Pieces = ({
           setGameStatus("Invalid move !!");
           return;
         }
+        clearHighlightedPosition();
       } catch (err) {
         console.log("Error:", err);
         setGameStatus("An error occurred. Please try again.");
@@ -136,20 +147,11 @@ const Pieces = ({
     },
   });
 
-  const style = useAnimatedStyle(() => ({
-    position: "absolute",
-    zIndex: isGestureActive.value ? 100 : 10,
-    transform: [
-      { translateX: translateX.value },
-      { translateY: translateY.value },
-    ],
-  }));
-
   const original = useAnimatedStyle(() => ({
     position: "absolute",
     width: SIZE,
     height: SIZE,
-    zIndex: 0,
+    zIndex: 5,
     backgroundColor: isGestureActive.value
       ? "rgba(255, 255, 0, 0.5)"
       : "transparent",
@@ -163,7 +165,7 @@ const Pieces = ({
       position: "absolute",
       width: SIZE,
       height: SIZE,
-      zIndex: 0,
+      zIndex: 5,
       backgroundColor: isGestureActive.value
         ? "rgba(255, 255, 0, 0.5)"
         : "transparent",
@@ -171,19 +173,45 @@ const Pieces = ({
     };
   });
 
+  const tapRef = useRef(null);
+
+  const onPieceTap = useCallback(() => {
+    setIsTapped(!isTapped);
+  }, [isTapped]);
+
+  const handleSingleTap = () => {
+    updatePutPiece(id);
+    updatePutPosition(toPosition({ x: offsetX.value, y: offsetY.value }));
+    runOnJS(onPieceTap)();
+  };
+
+  const style = useAnimatedStyle(() => ({
+    position: "absolute",
+    zIndex: isGestureActive.value ? 100 : 10,
+    transform: [
+      { translateX: translateX.value },
+      { translateY: translateY.value },
+    ],
+  }));
+
   return (
     <>
-      <Animated.View style={original} />
-      <Animated.View style={underlay} />
+      {/* <Animated.View style={original} />
+      <Animated.View style={underlay} /> */}
       <PanGestureHandler onGestureEvent={onGestureEvent} enabled={enabled}>
         <Animated.View style={style}>
-          <Image key={key} source={PIECES[id]} style={styles.piece} />
+          <TapGestureHandler
+            onHandlerStateChange={({ nativeEvent }) => {
+              if (nativeEvent.state === State.ACTIVE) {
+                handleSingleTap();
+              }
+            }}
+            waitFor={tapRef}
+          >
+              <Image key={key} source={PIECES[id]} style={styles.piece} />
+          </TapGestureHandler>
         </Animated.View>
       </PanGestureHandler>
-      {/* <ModalComponent
-        isModalVisible={isModalVisible}
-        setModalVisible={setModalVisible}
-      /> */}
     </>
   );
 };
