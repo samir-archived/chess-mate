@@ -1,7 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Header from "../../Components/Header";
-import Tutorials from "./Tutorials";
 import Play from "./Play";
 import RecordScreen from "./RecordScreen";
 import RecordCss from "../../Utils/RecordCss";
@@ -21,8 +20,6 @@ export default function HomeScreen() {
       {/* Header */}
       <Header isProfile={false} />
       <View style={styles.subSection}>
-        {/* Categories */}
-        <Tutorials />
         {/* World Record */}
         <RecordScreen />
         {/* Play Button */}
@@ -30,7 +27,7 @@ export default function HomeScreen() {
       {/* <TouchableOpacity style={styles.touchable} onPress={onPress}>
       <Text style={styles.text}>Reset Record</Text>
     </TouchableOpacity> */}
-      <Play />
+      <Play isProfile={false}/>
     </View>
   );
 }
@@ -49,7 +46,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   subSection: {
-    padding: "4%",
+    padding: "2%",
     backgroundColor: Colors.LIGHTGRAY,
   },
 });

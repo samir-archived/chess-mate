@@ -38,6 +38,8 @@ export const ChessProvider = ({ children }) => {
   const chessRef = useConst(() => new Chess());
   // const chessRef = new Chess(fenWithPromotion);
 
+  const [isGuest, setGuest] = useState(false);
+
   const [state, setState] = useState({
     player: "w",
     board: chessRef.board(),
@@ -230,6 +232,8 @@ export const ChessProvider = ({ children }) => {
         resetBoard,
         changeState,
         resetRecord,
+        isGuest,
+        setGuest,
       }}
     >
       {children}
@@ -251,3 +255,5 @@ export const PieceProvider = ({ children }) => {
 };
 
 export const usePieceContext = () => useContext(PieceContext);
+
+

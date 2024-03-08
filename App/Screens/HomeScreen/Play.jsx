@@ -5,61 +5,40 @@ import HandleVibration from "../../Components/HandleVibration";
 import Colors from "../../Utils/Colors";
 import { useNavigation } from "@react-navigation/native";
 
-export default function Play() {
+export default function Play({ isProfile = false }) {
   const navigation = useNavigation();
+  const styles = StyleSheet.create({
+    container: {
+      marginTop: isProfile ? '3%' : -3,
+      height: '15%',
+      backgroundColor: Colors.LIGHTGRAY,
+    },
+    buttons: {
+      alignItems: "center",
+    },
+    button: {
+      backgroundColor: Colors.LIGHTGREEN,
+      padding: 15,
+      borderRadius: 10,
+      marginTop: 10,
+      width: "85%",
+      alignItems: "center",
+    },
+    btnText: {
+      color: Colors.WHITE,
+      fontSize: 19,
+      fontFamily: 'outfit-medium'
+    },
+
+  });
 
   return (
-    <View style={{}}>
-      {/* <Heading text="Tutorials" isViewAll={true} /> */}
+    <View style={styles.container}>
       <View style={styles.buttons}>
-        <TouchableOpacity style={styles.button} onPress={() => {HandleVibration(50); navigation.navigate('board')}}>
+        <TouchableOpacity style={styles.button} onPress={() => { HandleVibration(50); navigation.navigate('board') }}>
           <Text style={styles.btnText}>Play</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 }
-
-// const styles = StyleSheet.create({
-//   buttons: {
-//     display: "flex",
-//     flexDirection: "row",
-//     justifyContent: "space-evenly",
-//   },
-//   button: {
-//     padding: 15,
-//     backgroundColor: Colors.WHITE,
-//     borderRadius: 15,
-//     marginTop: 0,
-//   },
-//   btnText: {
-//     textAlign: "center",
-//     fontSize: 17,
-//     fontFamily: "outfit-medium",
-//     color: Colors.PRIMARY,
-//   },
-// });
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1, 
-    justifyContent: "center", 
-    paddingHorizontal: 16, 
-  },
-  buttons: {
-    alignItems: "center",
-  },
-  button: {
-    backgroundColor: Colors.LIGHTGREEN, 
-    padding: 15,
-    borderRadius: 10,
-    marginTop: 10,
-    width: "85%", 
-    alignItems: "center", 
-  },
-  btnText: {
-    color: Colors.WHITE, 
-    fontSize: 18,
-  },
-
-});

@@ -13,21 +13,22 @@ import * as WebBrowser from "expo-web-browser";
 import { useOAuth } from "@clerk/clerk-expo";
 import { useWarmUpBrowser } from "../../hooks/warmUpBrowser";
 import { useNavigation } from "@react-navigation/native";
+import { useChess } from "../BoardScreen/Design/ChessContext";
 
 
 WebBrowser.maybeCompleteAuthSession();
 
-export var isGuest = Boolean;
-
 export default function WelcomeScreen() {
   useWarmUpBrowser();
   const navigation = useNavigation();
-  
+
+  const { setGuest }  = useChess();
+
   const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
-  
+
   const onPress = React.useCallback(async () => {
     try {
-      !isGuest;
+      setGuest(false);
       const { createdSessionId, signIn, signUp, setActive } =
         await startOAuthFlow();
 
@@ -44,7 +45,7 @@ export default function WelcomeScreen() {
   }, []);
 
   const GuestMode = () => {
-    isGuest;
+    setGuest(true);
     navigation.push("StackScreen");
   };
 
@@ -72,6 +73,7 @@ export default function WelcomeScreen() {
                 textAlign: "center",
                 fontSize: 17,
                 color: Colors.PRIMARY,
+                fontFamily: 'outfit-medium',
               }}
             >
               Sign In / Sign Up
@@ -87,6 +89,7 @@ export default function WelcomeScreen() {
                 textAlign: "center",
                 fontSize: 17,
                 color: Colors.PRIMARY,
+                fontFamily: 'outfit-medium',
               }}
             >
               Play as Guest

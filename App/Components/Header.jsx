@@ -10,20 +10,20 @@ import {
 } from "react-native";
 import Colors from "../Utils/Colors";
 import { FontAwesome5 } from "@expo/vector-icons";
-import { isGuest } from "../Screens/WelcomeScreen/WelcomeScreen";
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesome } from '@expo/vector-icons';
+import { useChess } from "../Screens/BoardScreen/Design/ChessContext";
 
 export default function Header({ isProfile = false }) {
   const { user, isLoading } = useUser();
   const navigation = useNavigation();
+  const { isGuest } = useChess();
 
   // Handler function for login/logout button
   const handleLoginLogout = () => {
     // Add logic to handle actual authentication state in your application
     navigation.push("WelcomeScreen");
   };
-
   return (
     (user || isGuest) && (
       <View style={styles.container}>

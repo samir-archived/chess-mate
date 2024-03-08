@@ -5,11 +5,15 @@ import ChessboardStyles from "./ChessboardStyles";
 import Colors from "../../Utils/Colors";
 import { height } from "../BoardScreen/Design/Notation";
 import ChessPlayerStats from "./ChessPlayerStats";
+import Play from "../HomeScreen/Play";
+import { useChess } from "../BoardScreen/Design/ChessContext";
 
 const ProfileSection = () => {
   const [selectedChessboard, setSelectedChessboard] = useState("first"); // Default chessboard style
 
   const [soundEnabled, setSoundEnabled] = useState(true);
+
+  const { isGuest } = useChess();
 
   // Handler function to update the selected chessboard style
   const handleChessboardChange = (option) => {
@@ -30,7 +34,6 @@ const ProfileSection = () => {
     draws: 20,
     losses: 10,
   };
-
   return (
     <View style={styles.container}>
       <Header isProfile={true} />
@@ -40,7 +43,9 @@ const ProfileSection = () => {
           selectedStyle={selectedChessboard}
           onSelectStyle={handleChessboardChange}
         />
-        
+
+        {isGuest && <Play isProfile={true} />}
+
       </View>
     </View>
   );
