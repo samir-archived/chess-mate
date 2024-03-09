@@ -3,15 +3,11 @@ import { Text, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import ProfileScreen from "../Screens/ProfileScreen/ProfileScreen";
 import HomeScreen from "../Screens/HomeScreen/HomeScreen";
-import BoardScreen from "../Screens/BoardScreen/BoardScreen";
 
 // Icons
 import { FontAwesome, Entypo } from "@expo/vector-icons";
 import Colors from "../Utils/Colors";
-import { createStackNavigator } from '@react-navigation/stack';
 import { useChess } from "../Screens/BoardScreen/Design/ChessContext";
-
-const Stack = createStackNavigator();
 
 const Tab = createBottomTabNavigator();
 

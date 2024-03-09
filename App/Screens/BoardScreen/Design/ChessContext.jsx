@@ -1,4 +1,3 @@
-// ChessContext.js
 import React, {
   createContext,
   useContext,
@@ -9,7 +8,6 @@ import React, {
 } from "react";
 import { Chess } from "chess.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Timer from "./Timer";
 
 const ChessContext = createContext();
 

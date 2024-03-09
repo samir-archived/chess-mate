@@ -1,6 +1,5 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import React from "react";
-import Heading from "../../Components/Heading";
 import HandleVibration from "../../Components/HandleVibration";
 import Colors from "../../Utils/Colors";
 import { useNavigation } from "@react-navigation/native";

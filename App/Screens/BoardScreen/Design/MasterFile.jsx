@@ -1,4 +1,3 @@
-// MasterFile.jsx
 import React, { useRef, useState } from "react";
 import {
   View,
@@ -12,9 +11,7 @@ import Pieces from "./Pieces";
 import { SIZE } from "./Notation";
 import { useChess } from "./ChessContext";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
-import { Chess } from "chess.js";
 import Timer from "./Timer";
-import HandleVibration from "../../../Components/HandleVibration";
 import ModalComponent from "../../../Components/ModalComponent";
 import PieceHint from "./PieceHint";
 import calculatePossibleMoves from "./calculatePossibleMoves";

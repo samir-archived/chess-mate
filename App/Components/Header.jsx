@@ -1,5 +1,5 @@
 import { useClerk, useUser } from "@clerk/clerk-expo";
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   Text,

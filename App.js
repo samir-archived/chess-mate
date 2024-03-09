@@ -15,7 +15,7 @@ const App = () => {
   const isConnected = InternetCheck();
   return (
     <ChessProvider>
-      {isConnected ? <Authentication /> : <NoInternet />}
+      { isConnected ? <Authentication /> : <NoInternet /> }
     </ChessProvider>
   );
 };

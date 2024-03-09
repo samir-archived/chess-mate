@@ -1,10 +1,8 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import Header from "../../Components/Header";
 import Play from "./Play";
 import RecordScreen from "./RecordScreen";
-import RecordCss from "../../Utils/RecordCss";
-import Heading from "../../Components/Heading";
 import Colors from "../../Utils/Colors";
 import { useChess } from "../BoardScreen/Design/ChessContext";
 
