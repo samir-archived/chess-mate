@@ -9,7 +9,7 @@ export default function Play({ isProfile = false }) {
   const navigation = useNavigation();
   const styles = StyleSheet.create({
     container: {
-      marginTop: isProfile ? '3%' : -3,
+      marginTop: isProfile ? '3%' : -14,
       height: '15%',
       backgroundColor: Colors.LIGHTGRAY,
     },

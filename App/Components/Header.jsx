@@ -1,4 +1,4 @@
-import { useUser } from "@clerk/clerk-expo";
+import { useClerk, useUser } from "@clerk/clerk-expo";
 import React, { useState } from "react";
 import {
   View,
@@ -13,15 +13,29 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesome } from '@expo/vector-icons';
 import { useChess } from "../Screens/BoardScreen/Design/ChessContext";
+import App from "../../App";
 
 export default function Header({ isProfile = false }) {
-  const { user, isLoading } = useUser();
+  const { user } = useUser();
   const navigation = useNavigation();
   const { isGuest } = useChess();
+  const { signOut } = useClerk();
 
-  // Handler function for login/logout button
-  const handleLoginLogout = () => {
-    // Add logic to handle actual authentication state in your application
+  // Handler function for logout button
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      // After successful logout,
+      <App />
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
+
+  // Handler function for login button
+  const handleLogin = () => {
+    // navigate to the login screen
     navigation.push("WelcomeScreen");
   };
   return (
@@ -75,7 +89,7 @@ export default function Header({ isProfile = false }) {
                   flexDirection: "row",
                   gap: 10,
                 }}
-                onPress={handleLoginLogout}
+                onPress={isGuest ? handleLogin : handleLogout}
               >
                 {isProfile &&
                   (isGuest ? (

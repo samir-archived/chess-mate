@@ -27,7 +27,7 @@ const TabNavigation = () => {
       }}
     >
       {
-        isGuest &&
+        !isGuest &&
         <Tab.Screen
           name="home"
           component={HomeScreen}
