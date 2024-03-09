@@ -30,13 +30,48 @@ export const useChess = () => {
 };
 // Assuming you have a variable to store FEN
 let fenHistory = [];
+let intervalId;
 
 export const ChessProvider = ({ children }) => {
   const fenWithPromotion = "rnbqkbnr/pP6/8/8/8/8/1P6/RNBQKBNR b KQkq - 0 1";
   const chessRef = useConst(() => new Chess());
   // const chessRef = new Chess(fenWithPromotion);
+  const [userName, setUserNameState] = useState();
+
+  const setUserName = useCallback((newUserName) => {
+    setUserNameState(newUserName);
+  }, []);
 
   const [isGuest, setGuest] = useState(false);
+
+  const [savedGames, setSavedGames] = useState([]);
+
+  const fetchGames = useCallback(async () => {
+    try {
+      const state = await getSavedGames();
+      setSavedGames(state);
+      // If internet is available and savedGames is not empty, stop further checks
+      if (state.length > 0) {
+        clearInterval(intervalId);
+      }
+    } catch (error) {
+      console.error('Error fetching games: ', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Initial check on component mount
+    fetchGames();
+    // Periodic check every 5 seconds
+    intervalId = setInterval(() => {
+      fetchGames();
+    }, 5000);
+    return () => {
+      clearInterval(intervalId); // Clear the interval on component unmount
+    };
+  }, [fetchGames]);
+
+
 
   const [state, setState] = useState({
     player: "w",
@@ -107,6 +142,7 @@ export const ChessProvider = ({ children }) => {
   const resetRecord = async () => {
     try {
       await AsyncStorage.removeItem("savedGames");
+      fetchGames();
       console.log("Data removed successfully");
     } catch (error) {
       console.error("Error removing data: ", error);
@@ -118,8 +154,8 @@ export const ChessProvider = ({ children }) => {
       try {
         const history = chessRef.history({ verbose: true });
         const wonPlayer = chessRef.turn() === "w" ? "BLACK" : "WHITE";
-
         const newDetails = {
+          user: userName,
           player: wonPlayer,
           time: currentTime,
           moves: history,
@@ -134,8 +170,26 @@ export const ChessProvider = ({ children }) => {
         // Add the new game record to the existing array
         existingGames.push(newDetails);
 
+        // Sort the game records based on the time property in ascending order
+        existingGames.sort((a, b) => {
+          // Assuming time is in the format "hh:mm:ss"
+          const timeA = new Date(`2000-01-01T${a.time}`);
+          const timeB = new Date(`2000-01-01T${b.time}`);
+          return timeA - timeB;
+        });
+
+        // Keep only the top 8 records
+        const top8Games = existingGames.slice(0, 8);
+
+        // Add s.no to each game
+        const gamesWithSNo = top8Games.map((game, index) => ({
+          ...game,
+          position: index + 1,
+        }));
+        console.log(gamesWithSNo);
+
         // Save the updated array back to AsyncStorage
-        await AsyncStorage.setItem("savedGames", JSON.stringify(existingGames));
+        await AsyncStorage.setItem("savedGames", JSON.stringify(gamesWithSNo));
 
         console.log("Game saved successfully.");
       } catch (error) {
@@ -161,19 +215,24 @@ export const ChessProvider = ({ children }) => {
         return [];
       }
 
-      // Assuming each record has 'player' and 'time' fields
-      const gameRecords = existingGames.map((record) => ({
+      // Sort the game records based on the time property in ascending order
+      existingGames.sort((a, b) => {
+        // Assuming time is in the format "hh:mm:ss"
+        const timeA = new Date(`2000-01-01T${a.time}`);
+        const timeB = new Date(`2000-01-01T${b.time}`);
+        return timeA - timeB;
+      });
+
+      // Keep only the top 8 records
+      const top8Games = existingGames.slice(0, 8);
+
+      // Map records to the desired format
+      const gameRecords = top8Games.map((record) => ({
+        user: record.user,
+        position: record.position,
         player: record.player,
         time: record.time,
       }));
-
-      // Sort the gameRecords array based on the time property
-      // gameRecords.sort((a, b) => {
-      //   // Assuming time is in the format "hh:mm:ss"
-      //   const timeA = new Date(`2000-01-01T${a.time}`);
-      //   const timeB = new Date(`2000-01-01T${b.time}`);
-      //   return timeA - timeB;
-      // });
 
       return gameRecords;
     } catch (error) {
@@ -181,6 +240,7 @@ export const ChessProvider = ({ children }) => {
       return [];
     }
   };
+
 
   const resetBoard = () => {
     if (chessRef) {
@@ -197,8 +257,8 @@ export const ChessProvider = ({ children }) => {
   const changeState = () => {
     if (chessRef) {
       const currentTurn = chessRef.turn();
-      chessRef.turn();
-      currentTurn = chessRef.turn();
+      // chessRef.turn();
+      // currentTurn = chessRef.turn();
       // setState((prevState) => ({
       //   player: currentTurn === "w" ? "b" : "w",
       //   // board: chessRef.board(),
@@ -232,6 +292,9 @@ export const ChessProvider = ({ children }) => {
         resetRecord,
         isGuest,
         setGuest,
+        savedGames,
+        fetchGames,
+        setUserName
       }}
     >
       {children}

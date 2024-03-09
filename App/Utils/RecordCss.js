@@ -1,16 +1,11 @@
 import { StyleSheet } from "react-native";
 import Colors from "./Colors";
-import { height } from "../Screens/BoardScreen/Design/Notation";
-import InternetCheck from "../Components/InternetCheck";
 
 const RecordCss = StyleSheet.create({
   container: {
-    // backgroundColor: "#f5f5f5",
     padding: 3,
+    marginTop: '-17.5%',
     marginBottom: "1.5%",
-    // backgroundColor: isConnected == true ? "red" : "green",
-    // alignItems: isConnected == false && 'center',
-    // justifyContent: isConnected == false && 'center',
   },
   tableHeader: {
     flexDirection: "row",
@@ -29,7 +24,7 @@ const RecordCss = StyleSheet.create({
   },
   tableRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "space-evenly",
     backgroundColor: Colors.WHITE,
     padding: 10,
     borderRadius: 8,
@@ -44,7 +39,7 @@ const RecordCss = StyleSheet.create({
     fontFamily: "outfit",
   },
   scrollContainer: {
-    height: height - 0.37 * height,
+    height: 605,
   },
 });
 

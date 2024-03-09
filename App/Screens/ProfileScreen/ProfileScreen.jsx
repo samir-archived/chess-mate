@@ -29,10 +29,10 @@ const ProfileSection = () => {
   // Assuming you have player stats data
   const playerStats = {
     playerName: 'John Doe',
-    totalGames: 100,
-    wins: 70,
-    draws: 20,
-    losses: 10,
+    totalGames: 0,
+    wins: 0,
+    draws: 0,
+    losses: 0,
   };
   return (
     <View style={styles.container}>

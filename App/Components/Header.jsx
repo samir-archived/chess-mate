@@ -1,5 +1,5 @@
 import { useClerk, useUser } from "@clerk/clerk-expo";
-import React from "react";
+import React, {useEffect} from "react";
 import {
   View,
   Text,
@@ -18,8 +18,13 @@ import App from "../../App";
 export default function Header({ isProfile = false }) {
   const { user } = useUser();
   const navigation = useNavigation();
-  const { isGuest } = useChess();
+  const { isGuest, setUserName } = useChess();
   const { signOut } = useClerk();
+  
+  useEffect(() => {
+    // updates the user name
+    setUserName(user.firstName);
+  }, [setUserName]);
 
   // Handler function for logout button
   const handleLogout = async () => {
@@ -31,7 +36,6 @@ export default function Header({ isProfile = false }) {
       console.error('Error logging out:', error);
     }
   };
-
 
   // Handler function for login button
   const handleLogin = () => {

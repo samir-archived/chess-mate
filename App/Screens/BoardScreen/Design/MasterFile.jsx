@@ -15,6 +15,8 @@ import Timer from "./Timer";
 import ModalComponent from "../../../Components/ModalComponent";
 import PieceHint from "./PieceHint";
 import calculatePossibleMoves from "./calculatePossibleMoves";
+import { useNavigation } from "@react-navigation/native";
+import RecordScreen from "../../HomeScreen/RecordScreen";
 
 const { width } = Dimensions.get("window");
 const { height } = Dimensions.get("window");
@@ -58,7 +60,9 @@ const MasterFile = () => {
     undoLastMove,
     redoLastMove,
     saveGame,
+    fetchGames
   } = useChess();
+  const navigation = useNavigation();
   const player = state.player === "w" ? "White" : "Black";
   const nxtPlayer = state.player === "w" ? "Black" : "White";
   const [isModalVisible, setModalVisible] = useState(false);
@@ -103,10 +107,8 @@ const MasterFile = () => {
     } else {
       console.error("Invalid ref or method not available.");
     }
-    clearHighlightedPosition();
-    resetBoard();
-    handleReset();
-    handlePause();
+    onCancelGame();
+    fetchGames();
   };
   const onCancelGame = () => {
     clearHighlightedPosition();

@@ -1,8 +1,10 @@
 import { View, Text, StyleSheet, Image } from 'react-native'
 import React from 'react';
 import InternetCheck from './InternetCheck';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 
-export default function NoInternet() {
+export default function NoInternet({ noInternet = true }) {
 
     const isConnected = InternetCheck();
 
@@ -11,14 +13,8 @@ export default function NoInternet() {
             fontSize: 22,
             fontFamily: "outfit-bold",
         },
-        image: {
-            width: 320,
-            height: 270,
-            resizeMode: "cover",
-            borderRadius: 10,
-        },
         noInternetContainer: {
-            marginTop: isConnected ? '15%' : '55%',
+            marginTop: isConnected ? '2%' : '55%',
             alignItems: "center",
             justifyContent: "center",
         },
@@ -34,7 +30,10 @@ export default function NoInternet() {
             fontSize: 35,
         },
     });
-    
+
+    let comment;
+    (noInternet) ? (comment = 'No Internet Connection\nReloads in every 5 second') : (comment = '✖ No Data Found ✖\nReloads in every 5 second');
+
     return (
         <View style={styles.noInternetContainer}>
             <Text style={styles.text}>
@@ -42,11 +41,17 @@ export default function NoInternet() {
                 Chess Mate
                 <Text style={styles.blackKing}> &#9818;</Text>
             </Text>
-            <Image
-                style={styles.image}
-                source={require("../../assets/images/NoInternet.png")}
-            />
-            <Text style={styles.noInternetText}> No Internet Connection{"\n"} Reloads in every 5 second </Text>
+            {
+                noInternet ? (
+                    <Feather name="wifi-off" size={250} color="black" />
+                ) : (
+                    <MaterialCommunityIcons name="database-off-outline" size={250} color="black" />
+                )
+            }
+
+            <Text style={styles.noInternetText}>
+                {comment}
+            </Text>
         </View>
     );
 }

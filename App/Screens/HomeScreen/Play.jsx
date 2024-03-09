@@ -8,7 +8,7 @@ export default function Play({ isProfile = false }) {
   const navigation = useNavigation();
   const styles = StyleSheet.create({
     container: {
-      marginTop: isProfile ? '3%' : -14,
+      marginTop: isProfile ? '3%' : 0,
       height: '15%',
       backgroundColor: Colors.LIGHTGRAY,
     },
@@ -19,7 +19,7 @@ export default function Play({ isProfile = false }) {
       backgroundColor: Colors.LIGHTGREEN,
       padding: 15,
       borderRadius: 10,
-      marginTop: 10,
+      // marginTop: 10,
       width: "85%",
       alignItems: "center",
     },

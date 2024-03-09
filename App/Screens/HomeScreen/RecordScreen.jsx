@@ -1,73 +1,64 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, Image, FlatList, StyleSheet } from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import { View, Text, Image, ImageBackground, FlatList, StyleSheet, TouchableOpacity } from "react-native";
 import RecordCss from "../../Utils/RecordCss";
 import Colors from "../../Utils/Colors";
-import Heading from "../../Components/Heading";
 import { useChess } from "../BoardScreen/Design/ChessContext";
 import InternetCheck from "../../Components/InternetCheck";
 import NoInternet from "../../Components/NoInternet";
+import { validateSchema } from "graphql";
 
 const RecordScreen = () => {
-  const { getSavedGames } = useChess();
-  const [savedGames, setSavedGames] = useState([]);
+  const { savedGames, fetchGames } = useChess();
   const isConnected = InternetCheck();
 
-
-  const dummyData = [
-    { player: "John Doe", time: "10:30" },
-    { player: "Jane Smith", time: "12:45" },
-    { player: "Bob Johnson", time: "14:15" },
-    { player: "Alice Williams", time: "16:00" },
-    { player: "Charlie Brown", time: "18:20" },
-    { player: "John Doe", time: "10:30" },
-    { player: "Jane Smith", time: "12:45" },
-    { player: "Charlie Brown", time: "18:20" },
-    { player: "John Doe", time: "10:30" },
-    { player: "Jane Smith", time: "12:45" },
-  ];
-  useEffect(() => {
-    // const fetchSavedGames = async () => {
-    //   const gameRecords = await getSavedGames();
-    //   setSavedGames(gameRecords);
-    // };
-
-    // fetchSavedGames();
-    setSavedGames(dummyData);
-  }, []);
-  let count = 0;
-
-
+  const navigateToGame = (item) => {
+    console.log("Player " + item.player);
+  }
 
   const renderItem = ({ item }) => (
-    <View
-      style={[
+    <TouchableOpacity onPress={() => navigateToGame(item)}>
+      {console.log(item.id)}
+      <View style={[
         RecordCss.tableRow,
         {
           backgroundColor:
-            count == 0
+            item.position == 1
               ? "#f7c631"
-              : count == 1
+              : item.position == 2
                 ? "#bebdb9"
-                : count == 2
+                : item.position == 3
                   ? "#d5a47d"
                   : Colors.WHITE,
         },
-      ]}
-    >
-      <Text style={RecordCss.tableCell}>
-        {count < 3 ? "#" : ""}
-        {++count}
-      </Text>
-      <Text style={RecordCss.tableCell}>{item.player}</Text>
-      <Text style={RecordCss.tableCell}>{item.time}</Text>
-    </View>
+      ]}>
+        <Text style={RecordCss.tableCell}>
+          {item.position <= 3 ? "#" : ""}
+          {item.position}
+        </Text>
+        <Text style={[RecordCss.tableCell, { fontFamily: 'outfit-medium' }]}>{item.user}</Text>
+        <Text style={RecordCss.tableCell}>{item.player}</Text>
+        <Text style={RecordCss.tableCell}>{item.time}</Text>
+      </View>
+    </TouchableOpacity>
   );
+  const styles = StyleSheet.create({
+    image: {
+      width: '100%',
+      height: 200,
+      alignSelf: 'center'
+    },
+    bgImg: {
+      width: '100%',
+      height: savedGames.length == 1 ? 300 : savedGames.length == 2 ? 255 : savedGames.length == 3 ? 209 : 200,
+      resizeMode: 'contain'
+    }
+  });
 
   return (
-    // <ScrollView style={RecordCss.scrollContainer} showsVerticalScrollIndicator={false} >
     <View>
-      <Heading text="Game Records" isRecord={true} />
+      {/* <Heading text="Game Records" isRecord={true} /> */}
       <View style={[RecordCss.container, RecordCss.scrollContainer,]}>
+        <Image style={styles.image} source={require("../../../assets/images/chess.png")} />
         {
           isConnected &&
           <View style={RecordCss.tableHeader}>
@@ -75,30 +66,49 @@ const RecordScreen = () => {
               Position
             </Text>
             <Text style={[RecordCss.tableCell, RecordCss.headerCell]}>
+              User
+            </Text>
+            <Text style={[RecordCss.tableCell, RecordCss.headerCell]}>
               Player
             </Text>
             <Text style={[RecordCss.tableCell, RecordCss.headerCell]}>Time</Text>
           </View>
         }
+        {/* <ImageBackground style={styles.bgImg} source={require("../../../assets/images/filler.png")} > */}
         <View style={[{
           paddingHorizontal: "3%",
         }]}>
           {
             isConnected ? (
-              <FlatList
-                data={savedGames}
-                renderItem={renderItem}
-                keyExtractor={(item, index) => index.toString()}
-                showsVerticalScrollIndicator={false}
-              />
+              (savedGames.length === 0) ? (
+                <TouchableOpacity onPress={fetchGames}>
+                  <NoInternet noInternet={false} />
+                </TouchableOpacity>
+              ) : (
+                <FlatList
+                  data={savedGames}
+                  renderItem={renderItem}
+                  keyExtractor={(item, index) => index.toString()}
+                  ListFooterComponent={() => (
+                    (savedGames.length < 9) && (
+                      <TouchableOpacity onPress={fetchGames}>
+                        <Image style={styles.bgImg} source={require("../../../assets/images/filler.png")} />
+                      </TouchableOpacity>
+                    )
+                  )}
+                  showsVerticalScrollIndicator={false}
+                  contentContainerStyle={{ paddingBottom: 250 }}
+                />)
 
             ) : (
-                <NoInternet />
-            )}
+              <NoInternet />
+            )
+
+          }
         </View>
+        {/* </ImageBackground> */}
       </View>
     </View>
-    // </ScrollView>
   );
 };
 
