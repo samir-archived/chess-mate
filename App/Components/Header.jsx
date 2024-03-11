@@ -1,5 +1,5 @@
 import { useClerk, useUser } from "@clerk/clerk-expo";
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -20,10 +20,10 @@ export default function Header({ isProfile = false }) {
   const navigation = useNavigation();
   const { isGuest, setUserName } = useChess();
   const { signOut } = useClerk();
-  
+
   useEffect(() => {
     // updates the user name
-    setUserName(user.firstName);
+    (!isGuest) && setUserName(user.firstName);
   }, [setUserName]);
 
   // Handler function for logout button
