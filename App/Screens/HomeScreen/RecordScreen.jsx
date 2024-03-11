@@ -1,23 +1,25 @@
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
 import { View, Text, Image, ImageBackground, FlatList, StyleSheet, TouchableOpacity } from "react-native";
 import RecordCss from "../../Utils/RecordCss";
 import Colors from "../../Utils/Colors";
 import { useChess } from "../BoardScreen/Design/ChessContext";
 import InternetCheck from "../../Components/InternetCheck";
 import NoInternet from "../../Components/NoInternet";
-import { validateSchema } from "graphql";
+import { useNavigation } from "@react-navigation/native";
 
 const RecordScreen = () => {
-  const { savedGames, fetchGames } = useChess();
+  const { savedGames, fetchGames, setShowRecord } = useChess();
   const isConnected = InternetCheck();
+  const navigation = useNavigation();
 
   const navigateToGame = (item) => {
     console.log("Player " + item.player);
+    setShowRecord(true);
+    navigation.navigate('historyboard');
   }
 
   const renderItem = ({ item }) => (
     <TouchableOpacity onPress={() => navigateToGame(item)}>
-      {console.log(item.id)}
       <View style={[
         RecordCss.tableRow,
         {

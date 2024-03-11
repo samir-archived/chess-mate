@@ -3,8 +3,10 @@ import React from "react";
 import HandleVibration from "../../Components/HandleVibration";
 import Colors from "../../Utils/Colors";
 import { useNavigation } from "@react-navigation/native";
+import { useChess } from "../BoardScreen/Design/ChessContext";
 
 export default function Play({ isProfile = false }) {
+  const { setShowRecord } = useChess();
   const navigation = useNavigation();
   const styles = StyleSheet.create({
     container: {
@@ -31,10 +33,16 @@ export default function Play({ isProfile = false }) {
 
   });
 
+  const playHandle = () => {
+    setShowRecord(false);
+    HandleVibration(50); 
+    navigation.navigate('board');
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.buttons}>
-        <TouchableOpacity style={styles.button} onPress={() => { HandleVibration(50); navigation.navigate('board') }}>
+        <TouchableOpacity style={styles.button} onPress={playHandle}>
           <Text style={styles.btnText}>Play</Text>
         </TouchableOpacity>
       </View>

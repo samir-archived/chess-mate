@@ -43,6 +43,8 @@ export const ChessProvider = ({ children }) => {
   }, []);
 
   const [isGuest, setGuest] = useState(false);
+  
+  const [showRecord, setShowRecord] = useState(false);
 
   const [savedGames, setSavedGames] = useState([]);
 
@@ -294,7 +296,9 @@ export const ChessProvider = ({ children }) => {
         setGuest,
         savedGames,
         fetchGames,
-        setUserName
+        setUserName,
+        setShowRecord,
+        showRecord
       }}
     >
       {children}

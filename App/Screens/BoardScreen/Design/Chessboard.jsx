@@ -14,8 +14,7 @@ import Colors from "../../../Utils/Colors";
 export const SIZE = width / 8;
 
 export default function Chessboard({
-  highlightedPosition,
-  setHighlightedPosition,
+  highlightedPosition = null,
 }) {
   const WHITE = Colors.BOARDGREEN;
   const BLACK = Colors.BOARDLIGHTGREEN;
