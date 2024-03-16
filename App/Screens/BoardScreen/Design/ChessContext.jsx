@@ -91,6 +91,8 @@ export const ChessProvider = ({ children }) => {
         turn: prevState.turn + 1,
         isGameFinished: chessRef.isCheckmate() || chessRef.isDraw(),
       }));
+      fenHistory.push(chessRef.fen());
+      console.log("yy : "+fenHistory);
     }
   }, [chessRef]);
 
