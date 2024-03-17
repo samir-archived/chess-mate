@@ -4,7 +4,10 @@ import ChessboardSquare from "./ChessboardSquare"; // Create ChessboardSquare co
 import { MaterialIcons, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import Colors from "../../../Utils/Colors";
+<<<<<<< HEAD
 import { useChess } from "./ChessContext";
+=======
+>>>>>>> 21d629d4e7b028edc5e0e1f1ddc843fb90c25761
 
 const { width } = Dimensions.get("window");
 const { height } = Dimensions.get("window");
@@ -73,12 +76,15 @@ const styles = StyleSheet.create({
 });
 
 const HistoryBoard = () => {
+<<<<<<< HEAD
     const { fetchGames, showRecord } = useChess();
     if (showRecord) {
         const f = fetchGames();
         console.log(f)
 
     }
+=======
+>>>>>>> 21d629d4e7b028edc5e0e1f1ddc843fb90c25761
     const navigatior = useNavigation();
 
     const handleRedo = () => {
