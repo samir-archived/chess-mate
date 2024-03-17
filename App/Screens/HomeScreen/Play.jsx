@@ -5,12 +5,12 @@ import Colors from "../../Utils/Colors";
 import { useNavigation } from "@react-navigation/native";
 import { useChess } from "../BoardScreen/Design/ChessContext";
 
-export default function Play({ isProfile = false }) {
-  const { setShowRecord } = useChess();
+export default function Play() {
+  const { setShowRecord, isGuest } = useChess();
   const navigation = useNavigation();
   const styles = StyleSheet.create({
     container: {
-      marginTop: isProfile ? '3%' : 0,
+      marginTop: isGuest ? '6%' : 0,
       height: '15%',
       backgroundColor: Colors.LIGHTGRAY,
     },
@@ -35,7 +35,7 @@ export default function Play({ isProfile = false }) {
 
   const playHandle = () => {
     setShowRecord(false);
-    HandleVibration(50); 
+    HandleVibration(50);
     navigation.navigate('board');
   }
 

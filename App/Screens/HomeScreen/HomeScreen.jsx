@@ -25,7 +25,7 @@ export default function HomeScreen() {
       {/* <TouchableOpacity style={styles.touchable} onPress={onPress}>
       <Text style={styles.text}>Reset Record</Text>
     </TouchableOpacity> */}
-      <Play isProfile={false}/>
+      <Play isProfile={false} />
     </View>
   );
 }

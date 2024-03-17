@@ -13,7 +13,6 @@ const RecordScreen = () => {
   const navigation = useNavigation();
 
   const navigateToGame = (item) => {
-    console.log("Player " + item.player);
     setShowRecord(true);
     navigation.navigate('historyboard');
   }
@@ -37,7 +36,7 @@ const RecordScreen = () => {
           {item.position <= 3 ? "#" : ""}
           {item.position}
         </Text>
-        <Text style={[RecordCss.tableCell, { fontFamily: 'outfit-medium' }]}>{item.user}</Text>
+        {/* <Text style={[RecordCss.tableCell, { fontFamily: 'outfit-medium' }]}>{item.user}</Text> */}
         <Text style={RecordCss.tableCell}>{item.player}</Text>
         <Text style={RecordCss.tableCell}>{item.time}</Text>
       </View>
@@ -67,9 +66,9 @@ const RecordScreen = () => {
             <Text style={[RecordCss.tableCell, RecordCss.headerCell]}>
               Position
             </Text>
-            <Text style={[RecordCss.tableCell, RecordCss.headerCell]}>
+            {/* <Text style={[RecordCss.tableCell, RecordCss.headerCell]}>
               User
-            </Text>
+            </Text> */}
             <Text style={[RecordCss.tableCell, RecordCss.headerCell]}>
               Player
             </Text>

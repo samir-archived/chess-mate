@@ -1,14 +1,17 @@
 import { View, Text, Modal, TouchableOpacity, StyleSheet } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
+import { useChess } from "../Screens/BoardScreen/Design/ChessContext";
 
 export default function ModalComponent({
   isModalVisible,
   setModalVisible,
-  onCancelGame = () => {},
-  onSaveGame = () => {},
+  onCancelGame = () => { },
+  onSaveGame = () => { },
 }) {
   const navigation = useNavigation();
+
+  const { isGuest } = useChess();
 
   const handleCancelGame = () => {
     onCancelGame();
@@ -19,7 +22,7 @@ export default function ModalComponent({
   const handleOkGame = () => {
     onSaveGame();
     setModalVisible(false);
-    navigation.navigate("home");
+    isGuest ? navigation.navigate("profile") : navigation.navigate("home");
   };
 
   return (

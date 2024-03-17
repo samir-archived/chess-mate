@@ -5,14 +5,13 @@ import Chessboard from "./Chessboard";
 import Colors from "../../Utils/Colors";
 
 const ChessboardStyles = ({ selectedStyle, onSelectStyle }) => {
+  if (!selectedStyle)
+    selectedStyle = "first";
   const colorOptions = {
     first: { white: Colors.BOARDGREEN, black: Colors.BOARDLIGHTGREEN },
-    second: { white: Colors.BOARDLIGHTGRAY, black: Colors.GRAY },
-    // third: { white: Colors.WHITE, black: Colors.BLACK },
-    // fourth: { white: Colors.WHITE, black: Colors.BLACK },
-    // fourth: { white: "", black: "" },
+    second: { white: "#a47044", black: "#f8e3af" },
+    // third: { white: "#35abbc", black: Colors.WHITE },
   };
-  const style = "first";
   return (
     <View style={styles.container}>
       <Text style={styles.sectionTitle}>Chessboard Style</Text>

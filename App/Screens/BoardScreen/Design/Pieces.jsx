@@ -208,7 +208,7 @@ const Pieces = ({
             }}
             waitFor={tapRef}
           >
-              <Image key={key} source={PIECES[id]} style={styles.piece} />
+            <Image key={key} source={PIECES[id]} style={styles.piece} />
           </TapGestureHandler>
         </Animated.View>
       </PanGestureHandler>

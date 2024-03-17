@@ -54,10 +54,8 @@ export default function Header({ isProfile = false }) {
             {isGuest ? (
               <FontAwesome5 name="user" size={25} color="white" />
             ) : (
-              <Image
-                source={{ uri: user?.imageUrl }}
-                style={styles.userImage}
-              />
+              <Image source={{ uri: user?.imageUrl }} style={styles.userImage} />
+              // <FontAwesome5 name="user" size={25} color="white" />
             )}
           </TouchableOpacity>
           <View>

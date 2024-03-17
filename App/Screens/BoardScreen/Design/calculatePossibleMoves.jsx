@@ -92,8 +92,8 @@ const calculatePawnMoves = (color, col, row, chessRef) => {
   // Two steps forward on the first move
   const initialForwardRow = color === "w" ? row + 2 : row - 2;
   if (
-    (color === "w" && row === 1) ||
-    (color === "b" && row === 6) // Check if it's the first move
+    (color === "w" && row === 2) ||
+    (color === "b" && row === 7)
   ) {
     if (
       isValidMove(
@@ -126,7 +126,7 @@ const calculatePawnMoves = (color, col, row, chessRef) => {
   ) {
     moves.push(`${indexToCol(rightDiagonal)}${rightDiagonalRow}`);
   }
-
+  console.log("=====")
   return moves;
 };
 
@@ -191,7 +191,7 @@ const calculateKnightMoves = (col, row, chessRef) => {
 const isValidMove = (fromCol, fromRow, toCol, toRow, chessRef) => {
   const from = indexToCol(fromCol) + fromRow.toString();
   const to = indexToCol(toCol) + toRow.toString();
-  console.log("here: ",from,to);
+  console.log("here: ", from, to);
   const moves = chessRef.moves({ verbose: true });
   const move = moves.find((m) => m.from === from && m.to === to);
   return move;

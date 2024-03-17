@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -10,14 +10,35 @@ import {
 const { width } = Dimensions.get("window");
 const { height } = Dimensions.get("window");
 import Colors from "../../../Utils/Colors";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const SIZE = width / 8;
 
 export default function Chessboard({
   highlightedPosition = null,
 }) {
-  const WHITE = Colors.BOARDGREEN;
-  const BLACK = Colors.BOARDLIGHTGREEN;
+  const [selectedChessboard, setSelectedChessboard] = useState("first"); // Default chessboard style
+
+  useEffect(() => {
+    const getSavedGame = async () => {
+      const savedGame = await AsyncStorage.getItem("chessBoard");
+      setSelectedChessboard(savedGame);
+    };
+    getSavedGame();
+  }, []);
+
+  let WHITE, BLACK;
+  if (selectedChessboard == "first") {
+    WHITE = Colors.BOARDGREEN;
+    BLACK = Colors.BOARDLIGHTGREEN;
+  } else if (selectedChessboard == "second") {
+    WHITE = "#a47044";
+    BLACK = "#f8e3af";
+  } else {
+    WHITE = "#35abbc";
+    BLACK = "#ffffff";
+  }
+
   // const WHITE = Colors.BLACK;
   // const BLACK = Colors.WHITE;
 
@@ -40,7 +61,7 @@ export default function Chessboard({
       const color = isBlackSquare ? WHITE : BLACK;
       const textStyle = { fontWeight: "500", color };
       const position = `${horizontalAxis[j]}${verticalAxis[7 - i]}`;
-      const borderColor= highlightedPosition.includes(position) ? 'red' : 'transparent';
+      const borderColor = highlightedPosition.includes(position) ? 'red' : 'transparent';
       //   const piece = // Determine piece based on position (e.g., rook on corners, pawns on rank 2)
 
       board[i][j] = (

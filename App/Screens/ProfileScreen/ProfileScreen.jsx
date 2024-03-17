@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 import Header from "../../Components/Header";
 import ChessboardStyles from "./ChessboardStyles";
@@ -7,6 +7,7 @@ import { height } from "../BoardScreen/Design/Notation";
 import ChessPlayerStats from "./ChessPlayerStats";
 import Play from "../HomeScreen/Play";
 import { useChess } from "../BoardScreen/Design/ChessContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ProfileSection = () => {
   const [selectedChessboard, setSelectedChessboard] = useState("first"); // Default chessboard style
@@ -15,25 +16,82 @@ const ProfileSection = () => {
 
   const { isGuest } = useChess();
 
-  // Handler function to update the selected chessboard style
-  const handleChessboardChange = (option) => {
+  useEffect(() => {
+    const getSavedGame = async () => {
+      const savedGame = await AsyncStorage.getItem("chessBoard");
+      setSelectedChessboard(savedGame);
+    };
+    getSavedGame();
+  }, []);
+
+  const handleChessboardChange = async (option) => {
+    await AsyncStorage.setItem("chessBoard", option);
     setSelectedChessboard(option);
-    // logic to apply the selected chessboard style to your chessboard component
   };
 
   const toggleSound = () => {
     setSoundEnabled(!soundEnabled);
-    // logic to control the sound in your application
+    // logic to control the sound in application
   };
 
-  // Assuming you have player stats data
-  const playerStats = {
-    playerName: 'John Doe',
+  const [playerStats, setPlayerStats] = useState({
     totalGames: 0,
     wins: 0,
     draws: 0,
     losses: 0,
+  });
+
+  // Fetch player stats from AsyncStorage
+  // useEffect(() => {
+  const fetchPlayerStats = async () => {
+    try {
+      const existingData = await AsyncStorage.getItem("savedGames");
+      if (existingData) {
+        const existingGames = JSON.parse(existingData);
+
+        let totalGames = 0;
+        let wins = 0;
+        let draws = 0;
+        let losses = 0;
+
+        existingGames.forEach((game) => {
+          totalGames++;
+
+          if (game.player === "WHITE" || game.player === "BLACK") {
+            if (game.player === "WHITE") {
+              wins++;
+            } else {
+              losses++;
+            }
+          } else {
+            draws++;
+          }
+        });
+
+        // Update playerStats state with fetched data
+        setPlayerStats({
+          totalGames: totalGames,
+          wins: wins,
+          draws: draws,
+          losses: losses,
+        });
+      } else {
+        // If no existing games found, set playerStats state to initial values
+        setPlayerStats({
+          totalGames: 0,
+          wins: 0,
+          draws: 0,
+          losses: 0,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching player stats: ", error);
+    }
   };
+
+  fetchPlayerStats();
+  // }, []); // Empty dependency array ensures useEffect runs only once after component mounts
+
   return (
     <View style={styles.container}>
       <Header isProfile={true} />
@@ -44,7 +102,7 @@ const ProfileSection = () => {
           onSelectStyle={handleChessboardChange}
         />
 
-        {isGuest && <Play isProfile={true} />}
+        {isGuest && <Play />}
 
       </View>
     </View>
@@ -52,7 +110,9 @@ const ProfileSection = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {},
+  guestPlay: {
+    // marginTop: '1%'
+  },
   subContainer: {
     padding: "4%",
     backgroundColor: Colors.LIGHTGRAY,

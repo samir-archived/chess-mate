@@ -18,7 +18,7 @@ const ChessPlayerStats = ({ totalGames, wins, draws, losses }) => {
         </View>
         <View style={styles.statContainer}>
           <Text style={styles.statValue}>{wins}</Text>
-          <Text style={[styles.statLabel, { color: Colors.WIN }]}>Wins</Text>
+          <Text style={[styles.statLabel, { color: Colors.WIN }]}>Win</Text>
         </View>
       </View>
       <View style={styles.rowContainer}>

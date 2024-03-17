@@ -153,22 +153,18 @@ const MasterFile = () => {
       </View>
       <View style={styles.infoContainer}>
         <View style={styles.infoContainer}>
-          <Text style={styles.infoText}>{`Game Status: ${
-            gameStatus != "Success"
+          <Text style={styles.infoText}>{`Game Status: ${gameStatus != "Success"
               ? gameStatus
               : chessRef.isDraw()
-              ? `It's a draw`
-              : chessRef.isCheckmate()
-              ? `${nxtPlayer} Won //Game Finished//`
-              : chessRef.inCheck()
-              ? `${player} King is in Danger`
-              : `In progress`
-          }`}</Text>
+                ? `It's a draw`
+                : chessRef.isCheckmate()
+                  ? `${nxtPlayer} Won //Game Finished//`
+                  : chessRef.inCheck()
+                    ? `${player} King is in Danger`
+                    : `In progress`
+            }`}</Text>
         </View>
       </View>
-      {/* <View style={styles.infoContainer}>
-        <Text style={styles.infoText}>{`Next Player: ${nxtPlayer}`}</Text>
-      </View> */}
       <View style={styles.infoContainer}>
         <TouchableOpacity
           onPress={() => {

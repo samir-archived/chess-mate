@@ -43,7 +43,7 @@ export const ChessProvider = ({ children }) => {
   }, []);
 
   const [isGuest, setGuest] = useState(false);
-  
+
   const [showRecord, setShowRecord] = useState(false);
 
   const [savedGames, setSavedGames] = useState([]);
@@ -91,6 +91,7 @@ export const ChessProvider = ({ children }) => {
         turn: prevState.turn + 1,
         isGameFinished: chessRef.isCheckmate() || chessRef.isDraw(),
       }));
+      fenHistory.push(chessRef.fen());
     }
   }, [chessRef]);
 
@@ -128,7 +129,6 @@ export const ChessProvider = ({ children }) => {
   const redoLastMove = () => {
     console.log(fenHistory.length);
     if (chessRef && fenHistory.length > 0) {
-      const { move, fen } = fenHistory.pop();
       chessRef.load(fen); // Load the FEN to restore the board state
       chessRef.move(move); // Reapply the move
 
@@ -156,12 +156,15 @@ export const ChessProvider = ({ children }) => {
       try {
         const history = chessRef.history({ verbose: true });
         const wonPlayer = chessRef.turn() === "w" ? "BLACK" : "WHITE";
+        const storeFen = fenHistory;
         const newDetails = {
           user: userName,
           player: wonPlayer,
           time: currentTime,
           moves: history,
+          fen: storeFen
         };
+        console.log(newDetails)
 
         // Get existing games from AsyncStorage
         const existingData = await AsyncStorage.getItem("savedGames");
@@ -234,6 +237,7 @@ export const ChessProvider = ({ children }) => {
         position: record.position,
         player: record.player,
         time: record.time,
+        fen: record.fen
       }));
 
       return gameRecords;
